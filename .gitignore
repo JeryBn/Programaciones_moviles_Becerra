@@ -1,0 +1,44 @@
+# Root gitignore — Repositorio Programaciones_moviles_Becerra
+.gradle/
+build/
+.kotlin/
+.idea/
+captures/
+.externalNativeBuild/
+.cxx/
+*.ap_
+proguard/
+local.properties
+
+# JDK local y temp (no subir)
+jdk-17/
+jdk-17.zip
+C:/Users/Chory/AppData/Local/Temp/opencode/
+
+# Build de cada SEMANA (Android)
+SEMANA3/app/build/
+SEMANA3/.gradle/
+SEMANA3/build/
+SEMANA3/.kotlin/
+SEMANA3/.idea/
+
+# Obsidian caches
+vault/.obsidian/workspace.json
+vault/.obsidian/hotkeys.json
+.obsidian/workspace.json
+SEMANA3/vault/.obsidian/workspace.json
+SEMANA3/vault/.obsidian/hotkeys.json
+
+# OS
+.DS_Store
+Thumbs.db
+*.log
+
+# Mantener SEMANA3 estructura limpia — Lab03 coexiste con proyecto
+!SEMANA3/.gitignore
+!SEMANA3/README.md
+!SEMANA3/app/**
+!SEMANA3/vault/**
+!SEMANA3/docs/**
+!SEMANA3/gradle/**
+!SEMANA3/.opencode/**
