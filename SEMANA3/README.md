@@ -1,4 +1,6 @@
 # Sistema de Préstamos en Kotlin — Guía de trabajo completada
+<img width="1919" height="1035" alt="image" src="https://github.com/user-attachments/assets/71aa0917-806c-4df3-bc01-f45bc2c371d1" />
+
 
 > **Proyecto:** Aplicación móvil Kotlin para gestionar préstamos y cronograma de pagos (Guía §1-§18)  
 > **Stack:** Kotlin 2.0.21 · AGP 8.7.3 · Gradle 8.11.1 · Compose Material3 · Navigation · Room-ready · MVVM  
