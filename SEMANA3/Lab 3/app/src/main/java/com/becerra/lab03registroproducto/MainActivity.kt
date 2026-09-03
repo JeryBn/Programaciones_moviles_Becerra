@@ -61,10 +61,13 @@ fun PantallaRegistro(modifier: Modifier = Modifier) {
             .padding(16.dp)
     ) {
 
+        // REGLA 2: Jerarquía tipográfica
         Text(
             text = "Nuevo producto",
             style = MaterialTheme.typography.headlineSmall
         )
+
+        Spacer(modifier = Modifier.height(16.dp))
 
         Text(
             text = "Completa los datos y presiona Agregar",
@@ -72,8 +75,9 @@ fun PantallaRegistro(modifier: Modifier = Modifier) {
             color = MaterialTheme.colorScheme.outline
         )
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
+        // REGLA 4: Campo largo a ancho completo
         OutlinedTextField(
             value = nombre,
             onValueChange = { nombre = it },
@@ -83,6 +87,7 @@ fun PantallaRegistro(modifier: Modifier = Modifier) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        // REGLA 4: Precio y cantidad comparten una fila
         Row(
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -104,8 +109,9 @@ fun PantallaRegistro(modifier: Modifier = Modifier) {
             )
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
+        // REGLA 3: Color principal del tema
         Button(
             onClick = {
                 mostrarResumen = true
@@ -115,7 +121,7 @@ fun PantallaRegistro(modifier: Modifier = Modifier) {
             Text("AGREGAR PRODUCTO")
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
         if (mostrarResumen) {
 
@@ -134,20 +140,28 @@ fun PantallaRegistro(modifier: Modifier = Modifier) {
                 ) {
 
                     Text(
-                        nombre,
+                        text = nombre,
                         style = MaterialTheme.typography.titleLarge
                     )
 
+                    Spacer(modifier = Modifier.height(16.dp))
+
                     Text(
-                        "Precio: S/ " + String.format("%.2f", precioNum)
+                        text = "Precio: S/ " +
+                                String.format("%.2f", precioNum),
+                        style = MaterialTheme.typography.bodyMedium
                     )
 
                     Text(
-                        "Cantidad: $cantidadNum"
+                        text = "Cantidad: $cantidadNum",
+                        style = MaterialTheme.typography.bodyMedium
                     )
 
+                    Spacer(modifier = Modifier.height(16.dp))
+
                     Text(
-                        "Importe: S/ " + String.format("%.2f", importe),
+                        text = "Importe: S/ " +
+                                String.format("%.2f", importe),
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.primary
                     )
