@@ -1,8 +1,21 @@
-# SEMANA 3 — Programación en Móviles
+# Laboratorio 03 - Registro de Producto
+**Nombre:** Jery Becerra Ninaquispe
 
-Estructura reorganizada:
+## Descripción
 
-- **Lab 3/** — Contiene `Lab03` (archivo original de la Semana 3).
-- **tarea semana 3/** — Proyecto completo **Sistema de Préstamos en Kotlin** (Android Compose + vault Obsidian + 4 agentes IA). Ver `tarea semana 3/README.md` y `tarea semana 3/docs/INFORME-DETALLADO.md` para uso, build y arquitectura. Abrir en Android Studio apuntando a `SEMANA3/tarea semana 3`.
+Aplicación Android desarrollada con Kotlin y Jetpack Compose para el registro de productos.
 
-> Ramas anteriores (`Programacion-orientada-a-objetos`, `polimorfismo`) consolidadas en `SEMANA2/` en la rama `main`.
+La aplicación permite ingresar el nombre de un producto, su precio y cantidad. Al presionar el botón **"AGREGAR PRODUCTO"**, se muestra un resumen con los datos ingresados y se calcula automáticamente el importe total del producto.
+
+## Tecnologías utilizadas
+
+* Kotlin
+* Android Studio
+* Jetpack Compose
+* Material 3
+  
+<img width="974" height="588" alt="image" src="https://github.com/user-attachments/assets/9c722f90-cb94-416d-9b0b-4a6ece81d802" />
+<img width="645" height="1344" alt="image" src="https://github.com/user-attachments/assets/46e18df3-3d52-4a75-a5f6-8c144d2f6fba" />
+
+¿qué pasaría si declaras las variables de los campos SIN remember?
+remember evita que el estado se pierda, sin remember estaria declarando variables normales que no estan diseñadas para mantener el estado de la UI de compose
