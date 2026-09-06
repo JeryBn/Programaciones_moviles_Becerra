@@ -19,3 +19,8 @@ La aplicación permite ingresar el nombre de un producto, su precio y cantidad. 
 
 ¿qué pasaría si declaras las variables de los campos SIN remember?
 remember evita que el estado se pierda, sin remember estaria declarando variables normales que no estan diseñadas para mantener el estado de la UI de compose
+
+## Mejora con IA
+
+La Parte B está en la rama `mejora-ia`, dentro de `SEMANA3/Lab 3`.
+Consulta el [README de la mejora](Lab%203/README.md#mejora-con-ia) para la tabla de prompts y decisiones, la atribución a Gemini y Codex, las pruebas y las capturas de validación y del botón Limpiar.
