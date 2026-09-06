@@ -54,6 +54,7 @@ fun PantallaRegistro(modifier: Modifier = Modifier) {
     var precio by remember { mutableStateOf("") }
     var cantidad by remember { mutableStateOf("") }
     var mostrarResumen by remember { mutableStateOf(false) }
+    var mostrarError by remember { mutableStateOf(false) }
 
     Column(
         modifier = modifier
@@ -114,7 +115,13 @@ fun PantallaRegistro(modifier: Modifier = Modifier) {
         // REGLA 3: Color principal del tema
         Button(
             onClick = {
-                mostrarResumen = true
+                if (nombre.isBlank() || precio.isBlank() || cantidad.isBlank()) {
+                    mostrarError = true
+                    mostrarResumen = false
+                } else {
+                    mostrarError = false
+                    mostrarResumen = true
+                }
             },
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -122,6 +129,30 @@ fun PantallaRegistro(modifier: Modifier = Modifier) {
         }
 
         Spacer(modifier = Modifier.height(16.dp))
+
+        Button(
+            onClick = {
+                nombre = ""
+                precio = ""
+                cantidad = ""
+                mostrarResumen = false
+                mostrarError = false
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Limpiar")
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        if (mostrarError) {
+            Text(
+                text = "Por favor, complete todos los campos.",
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodyMedium
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+        }
 
         if (mostrarResumen) {
 
@@ -170,3 +201,4 @@ fun PantallaRegistro(modifier: Modifier = Modifier) {
         }
     }
 }
+
