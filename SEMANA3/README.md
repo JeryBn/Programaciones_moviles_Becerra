@@ -1,21 +1,18 @@
-# Laboratorio 03 - Registro de Producto
-**Nombre:** Jery Becerra Ninaquispe
+# Semana 3 - Laboratorio 03
 
-## Descripción
+Esta carpeta contiene exclusivamente el laboratorio **Diseño de interfaces con Jetpack Compose: Registro de Producto**.
 
-Aplicación Android desarrollada con Kotlin y Jetpack Compose para el registro de productos.
+## Proyecto
 
-La aplicación permite ingresar el nombre de un producto, su precio y cantidad. Al presionar el botón **"AGREGAR PRODUCTO"**, se muestra un resumen con los datos ingresados y se calcula automáticamente el importe total del producto.
+Abre [Lab03RegistroProducto](Lab03RegistroProducto/) en Android Studio. La aplicación permite ingresar nombre, precio y cantidad de un producto; al presionar **AGREGAR PRODUCTO**, muestra una tarjeta con el resumen y el importe calculado con dos decimales.
 
-## Tecnologías utilizadas
+El README del proyecto incluye las dos capturas solicitadas y la respuesta sobre el uso de `remember`.
 
-* Kotlin
-* Android Studio
-* Jetpack Compose
-* Material 3
-  
-<img width="974" height="588" alt="image" src="https://github.com/user-attachments/assets/9c722f90-cb94-416d-9b0b-4a6ece81d802" />
-<img width="645" height="1344" alt="image" src="https://github.com/user-attachments/assets/46e18df3-3d52-4a75-a5f6-8c144d2f6fba" />
+## Ramas
 
-¿qué pasaría si declaras las variables de los campos SIN remember?
-remember evita que el estado se pierda, sin remember estaria declarando variables normales que no estan diseñadas para mantener el estado de la UI de compose
+| Rama | Propósito |
+| --- | --- |
+| `main` | Parte A: implementación manual del laboratorio y los seis commits de la sesión. |
+| `mejora-ia` | Parte B: validación de campos, botón Limpiar y documentación de la mejora asistida. |
+
+El proyecto de préstamos que estaba mezclado en esta semana fue retirado del contenido activo porque no corresponde a la guía del Laboratorio 03. Su historial se conserva en Git.
