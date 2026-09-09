@@ -2,13 +2,13 @@
 
 **Estudiante:** Jery Becerra Ninaquispe
 
-**Proyecto:** `SEMANA3/Lab 3`
+**Proyecto:** `SEMANA3/Lab03RegistroProducto`
 
 **Parte B:** rama `mejora-ia`, creada desde `main` en `c84a921`.
 
 Aplicación Android con Kotlin, Jetpack Compose y Material 3. Permite ingresar nombre, precio y cantidad; al presionar **AGREGAR PRODUCTO**, muestra una Card con el importe calculado y dos decimales. La Parte B incorpora validación y un botón **Limpiar**.
 
-La documentación y las capturas originales de la Parte A se conservan en [el README de SEMANA3](../README.md). El desarrollo de esta mejora se realiza exclusivamente en `mejora-ia`.
+Las capturas originales de la Parte A y la respuesta sobre `remember` se conservan en el historial de `main`. El desarrollo de esta mejora se realiza exclusivamente en `mejora-ia`.
 
 ## Mejora con IA
 
@@ -58,7 +58,7 @@ Desde esta carpeta, con Java y el SDK Android configurados y un emulador iniciad
 .\gradlew.bat assembleDebug testDebugUnitTest lintDebug connectedDebugAndroidTest "-Pandroid.testInstrumentationRunnerArguments.class=com.becerra.lab03registroproducto.RegistroProductoTest"
 ```
 
-Las pruebas instrumentadas también generan capturas en `/data/local/tmp/lab03-*.png` del emulador, para que sobrevivan a la limpieza de la aplicación de prueba. No se modificaron las versiones de Gradle, las dependencias ni el proyecto de préstamos ubicado en otra carpeta de SEMANA3.
+Las pruebas instrumentadas también generan capturas en `/data/local/tmp/lab03-*.png` del emulador, para que sobrevivan a la limpieza de la aplicación de prueba. No se modificaron las versiones de Gradle ni las dependencias.
 
 ## Historial de la Parte B
 
@@ -70,7 +70,7 @@ Los commits conservan sus horas reales. Para ver únicamente el trabajo de esta 
 
 ```powershell
 git log --oneline main..mejora-ia
-git diff main...mejora-ia -- "SEMANA3/Lab 3"
+git diff main...mejora-ia -- "SEMANA3/Lab03RegistroProducto"
 ```
 
 ## Puntos para la defensa oral
