@@ -1,5 +1,6 @@
 package com.Becerra.lab04carritotecsup
 
+import android.R
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -11,6 +12,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.modifier.modifierLocalOf
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -193,5 +195,41 @@ fun PantallaCarrito(modifier: Modifier = Modifier) {
     }
 }
 
-
+@Composable
+fun TarjetaProducto(
+    producto : Producto,
+    onEliminar: () -> Unit
+){
+    Card(
+        modifier = Modifier.padding(16dp)
+            .fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ){
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = producto.nombre,
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                text = "S/ %.2f x %d". format(producto.precio, producto.cantidad),
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color.Gray
+            )
+        }
+        Text(
+            text = "S/ %.2F".format(producto.precio * producto.cantidad),
+            fontWeight = FontWeight.Bold,
+            fontSize = 16.sp,
+            modifier = Modifier.padding(end = 8.dp)
+        )
+        IconButton(onClick = onEliminar) {
+            Icon (
+                imageVector = Icons.Default.Delete,
+                contentDescription = "Eliminar",
+                tint = MaterialTheme.colorScheme.error
+            )
+        }
+    }
+}
 
