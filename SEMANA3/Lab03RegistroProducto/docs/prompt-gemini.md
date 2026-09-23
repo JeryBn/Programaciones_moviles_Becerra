@@ -1,3 +1,12 @@
+# Prompt enviado a Gemini
+
+Fecha: 6 de septiembre de 2026. Modelo indicado por la interfaz: Flash-Lite.
+
+La siguiente petición se envió desde la interfaz web de Gemini con el código público de MainActivity.kt de main, commit c84a921. El resultado original está conservado en el commit B1 (6ea0734).
+
+```text
+En este archivo Kotlin de mi laboratorio Android con Jetpack Compose, modifica únicamente PantallaRegistro para agregar esta mejora: al pulsar AGREGAR PRODUCTO, si nombre, precio o cantidad están vacíos o contienen solo espacios, mostrar un mensaje de error rojo en lugar de la Card. Si todos están completos, mostrar la Card existente. Agrega debajo de AGREGAR PRODUCTO un botón Limpiar que vacíe los tres campos y oculte tanto error como resumen. Conserva remember y mutableStateOf, títulos, fila de precio/cantidad, espaciado de 16.dp, tema, cálculo y formato con 2 decimales. No cambies MainActivity, package, configuración Gradle ni agregues otras funcionalidades. Por ahora conserva toDoubleOrNull/toIntOrNull y Elvis para las conversiones. Devuelve el archivo MainActivity.kt completo compilable en un único bloque de código, incluidos los imports necesarios, sin abreviar secciones. Código actual:
+
 package com.becerra.lab03registroproducto
 
 import android.os.Bundle
@@ -54,13 +63,6 @@ fun PantallaRegistro(modifier: Modifier = Modifier) {
     var precio by remember { mutableStateOf("") }
     var cantidad by remember { mutableStateOf("") }
     var mostrarResumen by remember { mutableStateOf(false) }
-    var mensajeError by remember { mutableStateOf<String?>(null) }
-
-    // Un cambio en los campos requiere volver a validar antes de mostrar la Card.
-    fun ocultarResultado() {
-        mostrarResumen = false
-        mensajeError = null
-    }
 
     Column(
         modifier = modifier
@@ -87,10 +89,7 @@ fun PantallaRegistro(modifier: Modifier = Modifier) {
         // REGLA 4: Campo largo a ancho completo
         OutlinedTextField(
             value = nombre,
-            onValueChange = {
-                nombre = it
-                ocultarResultado()
-            },
+            onValueChange = { nombre = it },
             label = { Text("Nombre del producto") },
             modifier = Modifier.fillMaxWidth()
         )
@@ -104,10 +103,7 @@ fun PantallaRegistro(modifier: Modifier = Modifier) {
 
             OutlinedTextField(
                 value = precio,
-                onValueChange = {
-                    precio = it
-                    ocultarResultado()
-                },
+                onValueChange = { precio = it },
                 label = { Text("Precio (S/)") },
                 modifier = Modifier.weight(1f)
             )
@@ -116,10 +112,7 @@ fun PantallaRegistro(modifier: Modifier = Modifier) {
 
             OutlinedTextField(
                 value = cantidad,
-                onValueChange = {
-                    cantidad = it
-                    ocultarResultado()
-                },
+                onValueChange = { cantidad = it },
                 label = { Text("Cantidad") },
                 modifier = Modifier.weight(1f)
             )
@@ -130,20 +123,7 @@ fun PantallaRegistro(modifier: Modifier = Modifier) {
         // REGLA 3: Color principal del tema
         Button(
             onClick = {
-                val precioNum = precio.trim().toDoubleOrNull()
-                val cantidadNum = cantidad.trim().toIntOrNull()
-                mensajeError = when {
-                    nombre.isBlank() || precio.isBlank() || cantidad.isBlank() ->
-                        "Completa nombre, precio y cantidad."
-                    precioNum == null || !precioNum.isFinite() || precioNum <= 0.0 ->
-                        "Ingresa un precio válido mayor que cero (ejemplo: 12.50)."
-                    cantidadNum == null || cantidadNum <= 0 ->
-                        "Ingresa una cantidad entera mayor que cero."
-                    !(precioNum * cantidadNum).isFinite() ->
-                        "El importe es demasiado grande. Reduce el precio o la cantidad."
-                    else -> null
-                }
-                mostrarResumen = mensajeError == null
+                mostrarResumen = true
             },
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -152,33 +132,10 @@ fun PantallaRegistro(modifier: Modifier = Modifier) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Button(
-            onClick = {
-                nombre = ""
-                precio = ""
-                cantidad = ""
-                ocultarResultado()
-            },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Limpiar")
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        mensajeError?.let { error ->
-            Text(
-                text = error,
-                color = MaterialTheme.colorScheme.error,
-                style = MaterialTheme.typography.bodyMedium
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-        }
-
         if (mostrarResumen) {
 
-            val precioNum = precio.trim().toDoubleOrNull() ?: 0.0
-            val cantidadNum = cantidad.trim().toIntOrNull() ?: 0
+            val precioNum = precio.toDoubleOrNull() ?: 0.0
+            val cantidadNum = cantidad.toIntOrNull() ?: 0
             val importe = precioNum * cantidadNum
 
             Card(
@@ -192,7 +149,7 @@ fun PantallaRegistro(modifier: Modifier = Modifier) {
                 ) {
 
                     Text(
-                        text = nombre.trim(),
+                        text = nombre,
                         style = MaterialTheme.typography.titleLarge
                     )
 
@@ -222,3 +179,4 @@ fun PantallaRegistro(modifier: Modifier = Modifier) {
         }
     }
 }
+```
