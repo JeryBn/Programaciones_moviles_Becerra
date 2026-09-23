@@ -1,18 +1,19 @@
-package com.example.lab05 // Asegúrate de que esto coincida con TU paquete
+package com.example.lab05
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-// ... tus imports ...
+import com.example.lab05.ui.theme.Lab05Theme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            // Aquí es donde "enchufas" toda la aplicación
-            AppNavigation()
+            Lab05Theme {
+                AppNavigation()
+            }
         }
     }
 }
