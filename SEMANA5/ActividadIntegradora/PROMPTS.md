@@ -14,3 +14,9 @@ Repositorio: JeryBn/Programaciones_moviles_Becerra. Mover el contenido anterior 
 - El archivo vacío llamado Lab05 se conserva como Lab05-original.txt dentro de la carpeta del laboratorio.
 - Se completan los archivos Gradle ausentes en el laboratorio anterior.
 - Las comprobaciones y correcciones adicionales se documentan al finalizar.
+- La revisión detectó un conflicto de concurrent-futures; se alineó a 1.2.0.
+- Las pruebas en Android 17 fallaron con Espresso transitivo; al declarar 3.7.0 pasaron las cinco pruebas de interfaz.
+- Lint detectó un atributo para API 27 y el escape de local.properties; ambos se corrigieron, conservando minSdk 24.
+- Lab05 necesitó 2 GB para Gradle al compilar; se excluyeron sus volcados locales de memoria.
+
+Las correcciones anteriores fueron realizadas por el asistente durante esta sesión. El estudiante debe revisarlas y explicar las que comprenda; no se atribuyen como correcciones manuales realizadas por él.
