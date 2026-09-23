@@ -42,3 +42,7 @@ Thumbs.db
 !SEMANA3/docs/**
 !SEMANA3/gradle/**
 !SEMANA3/.opencode/**
+
+# Diagnosticos de JVM locales
+*.hprof
+hs_err_pid*

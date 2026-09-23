@@ -11,6 +11,7 @@ Este repositorio organiza los laboratorios del curso por semana. Cada carpeta `S
 | `SEMANA1` a `SEMANA17` | Laboratorios organizados por semana. |
 | `SEMANA2` | Ejercicios de Kotlin orientados a objetos. |
 | `SEMANA3` | Laboratorio 03: Registro de Producto con Jetpack Compose. |
+| [SEMANA5](SEMANA5/README.md) | [Lab05](SEMANA5/Lab05/README.md) y [TECSUP Fit](SEMANA5/ActividadIntegradora/README.md), actividad integradora y prácticas de sustentación. |
 
 ## Ramas de la Semana 3
 
