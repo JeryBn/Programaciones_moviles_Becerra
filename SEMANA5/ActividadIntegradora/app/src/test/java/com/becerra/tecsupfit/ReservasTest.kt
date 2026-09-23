@@ -23,4 +23,14 @@ class ReservasTest {
         val existentes = listOf(Reserva(1, 1, "Hoy · 08:00", EstadoReserva.CANCELADA))
         assertTrue(puedeReservar(existentes, 1, "Hoy · 08:00"))
     }
+    @Test fun cancelarConservaHistorialYSoloModificaConfirmadas() {
+        val existentes = listOf(Reserva(1, 1, "Hoy · 08:00"), Reserva(2, 2, "Hoy · 09:00", EstadoReserva.COMPLETADA))
+        val resultado = cancelarReserva(existentes, 1)
+        assertEquals(2, resultado.size)
+        assertEquals(EstadoReserva.CANCELADA, resultado.first().estado)
+        assertEquals(EstadoReserva.COMPLETADA, cancelarReserva(resultado, 2)[1].estado)
+        assertEquals(resultado, cancelarReserva(resultado, 999))
+        assertEquals(resultado, cancelarReserva(resultado, 1))
+        assertTrue(puedeReservar(resultado, 1, "Hoy · 08:00"))
+    }
 }
