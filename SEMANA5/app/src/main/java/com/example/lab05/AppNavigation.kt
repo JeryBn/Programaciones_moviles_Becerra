@@ -22,13 +22,14 @@ fun AppNavigation() {
             ProfileScreen(navController)
         }
         composable(
-            route = Screen.Detail.route,
-            arguments = listOf(navArgument("itemId") {
-                type = NavType.IntType
-                defaultValue = 0
+            route = Screen.DetailScreen.route,
+            arguments = listOf(
+                navArgument(name = "itemId") {
+                type = NavType.StringType
+                defaultValue = "default"
             })
         ) { backStackEntry ->
-            val itemId = backStackEntry.arguments?.getInt("itemId") ?: 0
+            val itemId = backStackEntry.arguments?.getString("itemId") ?: ""
             DetailScreen(navController, itemId)
         }
     }
