@@ -20,3 +20,14 @@ Repositorio: JeryBn/Programaciones_moviles_Becerra. Mover el contenido anterior 
 - Lab05 necesitó 2 GB para Gradle al compilar; se excluyeron sus volcados locales de memoria.
 
 Las correcciones anteriores fueron realizadas por el asistente durante esta sesión. El estudiante debe revisarlas y explicar las que comprenda; no se atribuyen como correcciones manuales realizadas por él.
+
+## Desarrollo de mejora-ia
+
+Dentro de la solicitud de desarrollar la guía, el asistente implementó la mejora sugerida en ella: cancelar una reserva mediante AlertDialog. No hubo un prompt adicional del estudiante sobre esta función; fue una decisión de implementación comunicada durante el trabajo.
+
+- Solicitar cancelación solo guarda el ID pendiente; confirmar ejecuta la función que cambia el estado.
+- Descartar el diálogo no cambia reservas.
+- Se conserva el historial y se permite reservar otra vez el horario liberado.
+- Se añadieron pruebas de no modificar reservas completadas, mantener/cancelar, volver a reservar y restauración del estado guardado.
+- Se integraron cambios remotos de Lab05 recibidos durante la sesión; sus pantallas y README se conservaron en la nueva carpeta.
+- Se conservó el historial de la rama mejora-ia anterior de semana 3 mediante una integración, sin sobrescribirla.
