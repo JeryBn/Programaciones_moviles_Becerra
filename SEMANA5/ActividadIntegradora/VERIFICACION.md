@@ -30,3 +30,18 @@
 Las pruebas ejecutan las alternativas ya implementadas; no equivalen a verificar cualquier edición manual futura del estudiante. Después de retirar funciones físicamente, se debe volver a compilar y probar. No se ha probado cada versión Android entre API 24 y 37. Los datos son locales de demostración y no se guardan permanentemente.
 
 Los reportes completos se generan localmente en `app/build/reports/`; no se suben archivos de compilación al repositorio.
+
+## Resultado final de mejora-ia
+
+- `assembleDebug`, `testDebugUnitTest`, `connectedDebugAndroidTest` y `lintDebug`: BUILD SUCCESSFUL.
+- 5 pruebas de lógica: 0 fallos.
+- 7 pruebas de interfaz: 0 fallos, 0 omitidas.
+- Se verificaron mantener reserva, confirmar cancelación, conservar historial, reservar nuevamente el horario y restaurar el estado guardado.
+- Lint: 0 errores y 4 advertencias sobre versiones de dependencias o el SDK de pruebas; no impiden compilar.
+- Lab05 recompilado tras integrar las actualizaciones remotas de sus pantallas: BUILD SUCCESSFUL. Conserva una advertencia de API obsoleta en el color de barra de estado del tema existente.
+
+Capturas reales del emulador:
+
+| Reservas | Confirmación para cancelar | Historial tras cancelar |
+|---|---|---|
+| ![Reservas](docs/evidencias/reservas.png) | ![Diálogo](docs/evidencias/dialogo-cancelacion.png) | ![Cancelada](docs/evidencias/reserva-cancelada.png) |

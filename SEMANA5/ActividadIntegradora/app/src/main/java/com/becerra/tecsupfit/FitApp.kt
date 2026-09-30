@@ -29,7 +29,7 @@ fun FitApp(
         } else null
     }
     if (usarNavegacion) {
-        Navegacion(reservas, registrar, usarScaffold, usarLazyColumn, usarLazyRow)
+        Navegacion(reservas, registrar, { id -> reservas = cancelarReserva(reservas, id) }, usarScaffold, usarLazyColumn, usarLazyRow)
     } else {
         // Práctica: se retira el NavHost, pero el Scaffold sigue mostrando sus tres áreas.
         // Las pestañas son demostrativas: al retirar navegación no cambian de pantalla.
