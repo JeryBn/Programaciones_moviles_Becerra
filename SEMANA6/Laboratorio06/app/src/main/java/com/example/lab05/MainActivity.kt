@@ -12,7 +12,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             Lab05Theme {
-                AppNavigation()
+                TecsupStoreApp()
             }
         }
     }
