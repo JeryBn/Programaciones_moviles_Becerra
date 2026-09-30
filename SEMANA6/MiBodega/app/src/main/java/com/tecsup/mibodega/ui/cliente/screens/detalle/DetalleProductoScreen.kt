@@ -17,6 +17,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.ShoppingBasket
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -114,6 +115,7 @@ fun DetalleProductoScreen(
 
 @Composable
 private fun EncabezadoDetalle(onVolver: () -> Unit) {
+    var favorito by remember { mutableStateOf(false) }
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -124,8 +126,8 @@ private fun EncabezadoDetalle(onVolver: () -> Unit) {
         IconButton(onClick = onVolver) {
             Icon(Icons.Default.ArrowBack, contentDescription = "Volver")
         }
-        IconButton(onClick = { /* TODO: guardar como favorito */ }) {
-            Icon(Icons.Default.FavoriteBorder, contentDescription = "Favorito")
+        IconButton(onClick = { favorito = !favorito }) {
+            Icon(if (favorito) Icons.Default.Favorite else Icons.Default.FavoriteBorder, contentDescription = "Favorito", tint = if (favorito) RojoPrecio else MaterialTheme.colorScheme.onSurface)
         }
     }
 }
@@ -161,4 +163,3 @@ private fun DetalleProductoPreview() {
         )
     }
 }
-

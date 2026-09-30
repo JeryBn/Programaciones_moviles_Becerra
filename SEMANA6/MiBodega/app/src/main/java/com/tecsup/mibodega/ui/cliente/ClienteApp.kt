@@ -55,8 +55,8 @@ fun ClienteApp() {
         composable(Rutas.BIENVENIDA) {
             BienvenidaScreen(
                 onRegistrarse = { navController.navigate(Rutas.REGISTRO) },
-                onIniciarSesion = { /* TODO: pantalla de login, aún no está en el mockup */ },
-                onTerminos = { /* TODO: abrir términos y condiciones */ }
+                onIniciarSesion = { navController.navigate(Rutas.INICIO) },
+                onTerminos = { navController.navigate(Rutas.REGISTRO) }
             )
         }
 
@@ -64,7 +64,6 @@ fun ClienteApp() {
             RegistroScreen(
                 onVolver = { navController.popBackStack() },
                 onCrearCuenta = { nombre, telefono, direccion, referencia ->
-                    // TODO: guardar estos datos cuando exista el registro real
                     navController.navigate(Rutas.INICIO) {
                         popUpTo(Rutas.BIENVENIDA) { inclusive = true }
                     }
