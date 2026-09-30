@@ -48,6 +48,7 @@ import androidx.compose.ui.unit.dp
 import com.tecsup.mibodega.ui.cliente.modelo.Producto
 import com.tecsup.mibodega.ui.cliente.modelo.listaCategorias
 import com.tecsup.mibodega.ui.cliente.modelo.listaProductosFake
+import com.tecsup.mibodega.ui.cliente.modelo.filtrarProductos
 import com.tecsup.mibodega.ui.componentes.ProductoCard
 import com.tecsup.mibodega.ui.theme.BodegaTheme
 import com.tecsup.mibodega.ui.theme.GrisClaro
@@ -73,11 +74,7 @@ fun InicioScreen(
     var categoriaSeleccionada by remember { mutableStateOf(listaCategorias.first()) }
     var textoBusqueda by remember { mutableStateOf("") }
 
-    val productosFiltrados = productos.filter { producto ->
-        val coincideCategoria = categoriaSeleccionada == "Todos" || producto.categoria == categoriaSeleccionada
-        val coincideBusqueda = producto.nombre.contains(textoBusqueda, ignoreCase = true)
-        coincideCategoria && coincideBusqueda
-    }
+    val productosFiltrados = filtrarProductos(productos, categoriaSeleccionada, textoBusqueda)
 
     Scaffold(
         topBar = {
