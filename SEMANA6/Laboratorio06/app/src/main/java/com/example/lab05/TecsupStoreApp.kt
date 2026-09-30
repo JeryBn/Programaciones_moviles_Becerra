@@ -79,9 +79,9 @@ fun TecsupStoreApp() {
             }
         ) { padding ->
             if (destino == Destino.FAVORITOS) {
-                ListaProductos(productosStore.filter { it.id in favoritos }, favoritos, { favoritos = alternar(favoritos, it) }, Modifier.padding(padding))
+                ListaProductos(productosStore.filter { it.id in favoritos }, favoritos, { favoritos = toggleFavorito(favoritos, it) }, Modifier.padding(padding))
             } else if (destino == Destino.INICIO) {
-                ListaProductos(productosStore, favoritos, { favoritos = alternar(favoritos, it) }, Modifier.padding(padding))
+                ListaProductos(productosStore, favoritos, { favoritos = toggleFavorito(favoritos, it) }, Modifier.padding(padding))
             } else {
                 Box(Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
                     Text("Seccion ${destino.etiqueta}", style = MaterialTheme.typography.headlineSmall)
@@ -91,7 +91,7 @@ fun TecsupStoreApp() {
     }
 }
 
-private fun alternar(actual: Set<Int>, id: Int) = if (id in actual) actual - id else actual + id
+internal fun toggleFavorito(actual: Set<Int>, id: Int) = if (id in actual) actual - id else actual + id
 
 @Composable
 private fun ListaProductos(productos: List<ProductoStore>, favoritos: Set<Int>, onFavorito: (Int) -> Unit, modifier: Modifier = Modifier) {
