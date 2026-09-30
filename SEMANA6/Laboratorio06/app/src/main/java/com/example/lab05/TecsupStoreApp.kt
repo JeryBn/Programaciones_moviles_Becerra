@@ -14,6 +14,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import kotlinx.coroutines.launch
 
 data class ProductoStore(val id: Int, val nombre: String, val precio: Double, val categoria: String)
@@ -57,7 +59,12 @@ fun TecsupStoreApp() {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Text(item.etiqueta)
                                 if (item == Destino.FAVORITOS && favoritos.isNotEmpty()) {
-                                    Spacer(Modifier.width(8.dp)); Badge { Text(favoritos.size.toString()) }
+                                    Spacer(Modifier.width(8.dp)); Badge {
+                                        Text(
+                                            favoritos.size.toString(),
+                                            Modifier.semantics { contentDescription = "${favoritos.size} productos favoritos" }
+                                        )
+                                    }
                                 }
                             }
                         },
