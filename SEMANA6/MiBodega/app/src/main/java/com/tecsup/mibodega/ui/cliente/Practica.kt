@@ -2,8 +2,8 @@ package com.tecsup.mibodega.ui.cliente
 
 // Cambiar una constante por vez. Restaurar true antes de entregar.
 object Practica {
-    const val USAR_SCAFFOLD = true
-    const val USAR_NAVEGACION = true
-    const val USAR_LAZY_COLUMN = true
-    const val USAR_LAZY_ROW = true
+    var USAR_SCAFFOLD = true
+    var USAR_NAVEGACION = true
+    var USAR_LAZY_COLUMN = true
+    var USAR_LAZY_ROW = true
 }

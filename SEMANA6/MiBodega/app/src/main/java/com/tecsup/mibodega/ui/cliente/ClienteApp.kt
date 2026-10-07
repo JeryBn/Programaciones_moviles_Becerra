@@ -88,7 +88,7 @@ fun ClienteApp() {
                     composable("confirmacion") {
                         // AnimatedContent anima el resumen si cambia el pedido; NavHost anima los cambios de destino.
                         AnimatedContent(targetState = ultimoPedido, label = "Resumen del pedido") { pedido ->
-                            ConfirmacionScreen(total = pedido?.total ?: 0.0, onVolverInicio = {
+                            ConfirmacionScreen(total = pedido?.total ?: 0.0, pedido = pedido, onVolverInicio = {
                                 nav.navigate("inicio") { popUpTo("inicio") { inclusive = true } }
                             })
                         }

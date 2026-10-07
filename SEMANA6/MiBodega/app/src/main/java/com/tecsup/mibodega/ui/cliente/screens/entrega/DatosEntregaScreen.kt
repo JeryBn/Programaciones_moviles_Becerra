@@ -7,6 +7,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.*
 import androidx.compose.ui.unit.dp
 import com.tecsup.mibodega.ui.cliente.modelo.*
 
@@ -24,8 +25,8 @@ fun DatosEntregaScreen(carrito: List<ItemCarrito>, onVolver: () -> Unit,
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
         OutlinedTextField(nombre, { nombre = it }, label = { Text("Nombre") }, isError = enviado && nombre.isBlank(), modifier = Modifier.fillMaxWidth())
         OutlinedTextField(telefono, { telefono = it }, label = { Text("Teléfono") }, isError = enviado && telefono.isBlank(), modifier = Modifier.fillMaxWidth())
-        Row { RadioButton(!recojo, { recojo = false }); Text("Delivery (+ S/ 4.00)") }
-        Row { RadioButton(recojo, { recojo = true }); Text("Recojo en tienda (gratis)") }
+        Row { RadioButton(!recojo, { recojo = false }, modifier = Modifier.semantics { contentDescription = "Elegir delivery" }); Text("Delivery (+ S/ 4.00)") }
+        Row { RadioButton(recojo, { recojo = true }, modifier = Modifier.semantics { contentDescription = "Elegir recojo" }); Text("Recojo en tienda (gratis)") }
         if (!recojo) {
             OutlinedTextField(direccion, { direccion = it }, label = { Text("Dirección") }, isError = enviado && direccion.isBlank(), modifier = Modifier.fillMaxWidth())
             OutlinedTextField(referencia, { referencia = it }, label = { Text("Referencia (opcional)") }, modifier = Modifier.fillMaxWidth())
