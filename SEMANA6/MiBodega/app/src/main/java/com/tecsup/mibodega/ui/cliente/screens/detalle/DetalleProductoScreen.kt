@@ -1,24 +1,16 @@
 package com.tecsup.mibodega.ui.cliente.screens.detalle
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawingPadding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.ShoppingBasket
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -35,18 +27,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.tecsup.mibodega.ui.cliente.modelo.Producto
 import com.tecsup.mibodega.ui.cliente.modelo.listaProductosFake
+import com.tecsup.mibodega.ui.componentes.FotoProducto
 import com.tecsup.mibodega.ui.componentes.BotonPrimario
 import com.tecsup.mibodega.ui.componentes.SelectorCantidad
 import com.tecsup.mibodega.ui.theme.BodegaTheme
-import com.tecsup.mibodega.ui.theme.GrisClaro
 import com.tecsup.mibodega.ui.theme.RojoPrecio
-import com.tecsup.mibodega.ui.theme.VerdeBodega
 
 /**
  * Pantalla 4: Detalle del producto (mockup "Cliente").
  * Guarda su propia cantidad seleccionada (remember) mientras el usuario
- * decide cuánto quiere; solo al tocar "Agregar al carrito" le avisa
- * a ClienteApp cuánto agregar.
+ * decide cuÃ¡nto quiere; solo al tocar "Agregar al carrito" le avisa
+ * a ClienteApp cuÃ¡nto agregar.
  */
 @Composable
 fun DetalleProductoScreen(
@@ -65,7 +56,7 @@ fun DetalleProductoScreen(
     ) {
         EncabezadoDetalle(favorito, onFavorito)
 
-        ImagenProducto()
+        FotoProducto(producto, Modifier.fillMaxWidth().height(180.dp))
 
         Column(
             modifier = Modifier
@@ -127,26 +118,6 @@ private fun EncabezadoDetalle(favorito: Boolean, onFavorito: () -> Unit) {
         IconButton(onClick = onFavorito) {
             Icon(if (favorito) Icons.Default.Favorite else Icons.Default.FavoriteBorder, contentDescription = "Favorito", tint = if (favorito) RojoPrecio else MaterialTheme.colorScheme.onSurface)
         }
-    }
-}
-
-@Composable
-private fun ImagenProducto() {
-    // Placeholder de imagen: reemplázalo por Image(painterResource(...))
-    // cuando tengan la foto real de cada producto.
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .aspectRatio(1.4f)
-            .background(GrisClaro),
-        contentAlignment = Alignment.Center
-    ) {
-        Icon(
-            imageVector = Icons.Default.ShoppingBasket,
-            contentDescription = null,
-            tint = VerdeBodega,
-            modifier = Modifier.size(80.dp)
-        )
     }
 }
 

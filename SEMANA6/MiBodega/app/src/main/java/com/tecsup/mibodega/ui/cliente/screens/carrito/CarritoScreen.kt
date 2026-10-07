@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.tecsup.mibodega.ui.cliente.ListaVertical
 import com.tecsup.mibodega.ui.cliente.modelo.*
+import com.tecsup.mibodega.ui.componentes.FotoProducto
 import com.tecsup.mibodega.ui.componentes.SelectorCantidad
 
 @Composable
@@ -17,11 +18,17 @@ fun CarritoScreen(carrito: List<ItemCarrito>, onVolver: () -> Unit,
     onEliminar: (Producto) -> Unit, onContinuarPedido: () -> Unit) {
     var pendiente by remember { mutableStateOf<Producto?>(null) }
     Column(Modifier.fillMaxSize()) {
-        if (carrito.isEmpty()) Text("Tu carrito está vacío", Modifier.padding(20.dp))
+        if (carrito.isEmpty()) Text("Tu carrito estÃ¡ vacÃ­o", Modifier.padding(20.dp))
         ListaVertical(carrito, { it.producto.id }, Modifier.weight(1f)) { item ->
             Card(Modifier.fillMaxWidth()) {
                 Column(Modifier.padding(12.dp)) {
-                    Text(item.producto.nombre)
+                    Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                        FotoProducto(item.producto, Modifier.size(72.dp))
+                        Column {
+                            Text(item.producto.nombre)
+                            Text(item.producto.descripcion, style = MaterialTheme.typography.bodySmall)
+                        }
+                    }
                     Text("S/ %.2f".format(item.producto.precio * item.cantidad))
                     Row {
                         SelectorCantidad(item.cantidad, { onIncrementar(item.producto) }, {
@@ -43,7 +50,7 @@ fun CarritoScreen(carrito: List<ItemCarrito>, onVolver: () -> Unit,
     }
     pendiente?.let { producto ->
         AlertDialog(onDismissRequest = { pendiente = null }, title = { Text("Eliminar producto") },
-            text = { Text("¿Eliminar ${producto.nombre} del carrito?") },
+            text = { Text("Â¿Eliminar ${producto.nombre} del carrito?") },
             confirmButton = { TextButton(onClick = { onEliminar(producto); pendiente = null }) { Text("Eliminar") } },
             dismissButton = { TextButton(onClick = { pendiente = null }) { Text("Cancelar") } })
     }
