@@ -40,15 +40,23 @@ fun Estructura(titulo: String, ruta: String, cantidad: Int,
     }
     val fondo = Modifier.fillMaxSize().background(Brush.verticalGradient(listOf(
         MaterialTheme.colorScheme.background, MaterialTheme.colorScheme.primaryContainer.copy(alpha = .55f))))
-    if (Practica.USAR_SCAFFOLD) {
-        Scaffold(topBar = superior, bottomBar = inferior) { innerPadding ->
-            Box(Modifier.padding(innerPadding).consumeWindowInsets(innerPadding).then(fondo)) { contenido() }
+    Column(
+        Modifier
+            .fillMaxSize()
+            .windowInsetsPadding(
+                WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal)
+            )
+    ) {
+        superior()
+
+        Box(
+            Modifier
+                .weight(1f)
+                .then(fondo)
+        ) {
+            contenido()
         }
-    } else {
-        Column(Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))) {
-            superior()
-            Box(Modifier.weight(1f).then(fondo)) { contenido() }
-            inferior()
-        }
+
+        inferior()
     }
 }
