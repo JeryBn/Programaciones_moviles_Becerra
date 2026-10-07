@@ -34,6 +34,7 @@ android {
 }
 
 dependencies {
+    implementation("androidx.concurrent:concurrent-futures:1.2.0")
     implementation(libs.androidx.core.ktx)
     implementation("androidx.navigation:navigation-compose:2.10.1")
     implementation("androidx.compose.material:material-icons-extended:1.7.8")
