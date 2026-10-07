@@ -1,132 +1,86 @@
 package com.example.lab05
-
+import android.content.Intent
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavType
+import androidx.navigation.compose.*
+import androidx.navigation.navArgument
 import kotlinx.coroutines.launch
 
-data class ProductoStore(val id: Int, val nombre: String, val precio: Double, val categoria: String)
-
-private val productosStore = listOf(
-    ProductoStore(1, "Audifonos", 89.0, "Tecnologia"),
-    ProductoStore(2, "Smartwatch", 199.0, "Tecnologia"),
-    ProductoStore(3, "Funda celular", 25.0, "Accesorios"),
-    ProductoStore(4, "Mochila Tecsup", 79.9, "Accesorios")
-)
-
-private enum class Destino(val etiqueta: String, val icono: ImageVector) {
-    INICIO("Inicio", Icons.Default.Home), PEDIDOS("Mis pedidos", Icons.Default.ReceiptLong),
-    FAVORITOS("Favoritos", Icons.Default.Favorite), PERFIL("Perfil", Icons.Default.Person),
-    SALIR("Cerrar sesion", Icons.Default.Logout)
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TecsupStoreApp() {
-    val drawerState = rememberDrawerState(DrawerValue.Closed)
+    val drawer = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
-    var destino by remember { mutableStateOf(Destino.INICIO) }
+    val contexto = LocalContext.current
     var favoritos by remember { mutableStateOf(setOf<Int>()) }
-
-    ModalNavigationDrawer(
-        drawerState = drawerState,
-        drawerContent = {
-            ModalDrawerSheet {
-                Row(Modifier.padding(20.dp), verticalAlignment = Alignment.CenterVertically) {
-                    Surface(shape = CircleShape, color = MaterialTheme.colorScheme.primaryContainer) {
-                        Text("JB", Modifier.padding(14.dp), fontWeight = FontWeight.Bold)
-                    }
-                    Spacer(Modifier.width(12.dp))
-                    Column { Text("Jery Becerra", fontWeight = FontWeight.Bold); Text("Estudiante TECSUP") }
-                }
-                HorizontalDivider()
-                Destino.entries.forEach { item ->
-                    NavigationDrawerItem(
-                        label = {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Text(item.etiqueta)
-                                if (item == Destino.FAVORITOS && favoritos.isNotEmpty()) {
-                                    Spacer(Modifier.width(8.dp)); Badge { Text(favoritos.size.toString()) }
-                                }
+    var pedidos by remember { mutableStateOf<List<ProductoStore>>(emptyList()) }
+    var reportado by remember { mutableStateOf<ProductoStore?>(null) }
+    var mensaje by remember { mutableStateOf("") }
+    val marcar: (Int) -> Unit = { favoritos = toggleFavorito(favoritos, it) }
+    val compartir: (ProductoStore) -> Unit = { producto ->
+        val intento = Intent(Intent.ACTION_SEND).apply { type = "text/plain"; putExtra(Intent.EXTRA_TEXT, "${producto.nombre} · S/ %.2f".format(producto.precio)) }
+        contexto.startActivity(Intent.createChooser(intento, "Compartir producto"))
+    }
+    val reportar: (ProductoStore) -> Unit = { reportado = it }
+    if (!Practica.USAR_NAVEGACION) {
+        ModalNavigationDrawer(drawerState = drawer, drawerContent = { AppDrawer("inicio", favoritos.size, {}) }) {
+            StoreEstructura("TECSUP Store · práctica sin navegación", { scope.launch { drawer.open() } }) {
+                StoreLista(productosStore, favoritos, marcar, compartir, reportar, {})
+            }
+        }
+    } else {
+        val nav = rememberNavController()
+        val entrada by nav.currentBackStackEntryAsState()
+        val ruta = entrada?.destination?.route ?: "inicio"
+        val navegar: (String) -> Unit = { destino ->
+            nav.navigate(destino) { if (destino in rutasStore) popUpTo("inicio") { inclusive = false }; launchSingleTop = true }
+            scope.launch { drawer.close() }
+        }
+        ModalNavigationDrawer(drawerState = drawer, drawerContent = { AppDrawer(ruta, favoritos.size, navegar) }) {
+            StoreEstructura("TECSUP Store · ${ruta.substringBefore('/')}", { scope.launch { drawer.open() } }) {
+                NavHost(navController = nav, startDestination = "inicio") {
+                    composable("inicio") { StoreLista(productosStore, favoritos, marcar, compartir, reportar, { navegar("detalle/$it") }) }
+                    composable("favoritos") { StoreLista(productosStore.filter { it.id in favoritos }, favoritos, marcar, compartir, reportar, { navegar("detalle/$it") }) }
+                    composable("pedidos") { Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                        Text("Mis pedidos de práctica", style = MaterialTheme.typography.headlineMedium)
+                        if (pedidos.isEmpty()) Text("Aún no tienes pedidos")
+                        pedidos.forEachIndexed { indice, producto -> Text("Pedido #${indice + 1}: ${producto.nombre} · Confirmado") }
+                    } }
+                    composable("perfil") { Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                        Text("Jery Becerra", style = MaterialTheme.typography.headlineMedium)
+                        Text("Estudiante TECSUP · Programación en Móviles")
+                        Text("${favoritos.size} favoritos · ${pedidos.size} pedidos de práctica")
+                        Text("Datos en memoria, sin servidor ni pagos reales")
+                    } }
+                    composable("salir") { Column(Modifier.padding(20.dp)) {
+                        Text("¿Cerrar la sesión de demostración y limpiar sus datos?")
+                        Button(onClick = { favoritos = emptySet(); pedidos = emptyList(); nav.navigate("inicio") { popUpTo("inicio") { inclusive = true } } }) { Text("Cerrar y reiniciar") }
+                        TextButton(onClick = { nav.popBackStack() }) { Text("Cancelar") }
+                    } }
+                    composable("detalle/{productoId}", arguments = listOf(navArgument("productoId") { type = NavType.IntType })) { entry ->
+                        val producto = productosStore.find { it.id == entry.arguments?.getInt("productoId") }
+                        Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                            if (producto == null) Text("Producto no encontrado") else {
+                                Text(producto.nombre, style = MaterialTheme.typography.headlineMedium)
+                                Text("ID: ${producto.id} · ${producto.categoria}")
+                                Text("S/ %.2f".format(producto.precio))
+                                Button(onClick = { pedidos = pedidos + producto; navegar("pedidos") }) { Text("Confirmar pedido de práctica") }
                             }
-                        },
-                        icon = { Icon(item.icono, null) },
-                        selected = destino == item,
-                        onClick = { destino = item; scope.launch { drawerState.close() } },
-                        modifier = Modifier.padding(horizontal = 12.dp)
-                    )
-                }
-            }
-        }
-    ) {
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    title = { Column { Text("TECSUP Store", fontWeight = FontWeight.Bold); Text(destino.etiqueta, style = MaterialTheme.typography.labelMedium) } },
-                    navigationIcon = { IconButton(onClick = { scope.launch { drawerState.open() } }) { Icon(Icons.Default.Menu, "Abrir menu") } }
-                )
-            }
-        ) { padding ->
-            if (destino == Destino.FAVORITOS) {
-                ListaProductos(productosStore.filter { it.id in favoritos }, favoritos, { favoritos = toggleFavorito(favoritos, it) }, Modifier.padding(padding))
-            } else if (destino == Destino.INICIO) {
-                ListaProductos(productosStore, favoritos, { favoritos = toggleFavorito(favoritos, it) }, Modifier.padding(padding))
-            } else {
-                Box(Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
-                    Text("Seccion ${destino.etiqueta}", style = MaterialTheme.typography.headlineSmall)
+                            TextButton(onClick = { nav.popBackStack() }) { Text("Volver") }
+                        }
+                    }
                 }
             }
         }
     }
-}
-
-internal fun toggleFavorito(actual: Set<Int>, id: Int) = if (id in actual) actual - id else actual + id
-
-@Composable
-private fun ListaProductos(productos: List<ProductoStore>, favoritos: Set<Int>, onFavorito: (Int) -> Unit, modifier: Modifier = Modifier) {
-    LazyColumn(modifier.fillMaxSize(), contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        items(productos, key = { it.id }) { producto -> TarjetaProducto(producto, producto.id in favoritos, onFavorito) }
-        if (productos.isEmpty()) item { Text("Aun no marcaste productos favoritos.") }
-    }
-}
-
-@Composable
-private fun TarjetaProducto(producto: ProductoStore, favorito: Boolean, onFavorito: (Int) -> Unit) {
-    var expandido by remember { mutableStateOf(false) }
-    ElevatedCard(shape = RoundedCornerShape(18.dp), modifier = Modifier.fillMaxWidth()) {
-        Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
-            Icon(Icons.Default.ShoppingBag, null, modifier = Modifier.size(42.dp), tint = MaterialTheme.colorScheme.primary)
-            Spacer(Modifier.width(14.dp))
-            Column(Modifier.weight(1f)) {
-                Text(producto.nombre, fontWeight = FontWeight.Bold)
-                Text("S/ %.2f".format(producto.precio), color = MaterialTheme.colorScheme.primary)
-                Text(producto.categoria, style = MaterialTheme.typography.labelSmall)
-            }
-            Box {
-                IconButton(onClick = { expandido = true }) { Icon(Icons.Default.MoreVert, "Opciones de ${producto.nombre}") }
-                DropdownMenu(expanded = expandido, onDismissRequest = { expandido = false }) {
-                    DropdownMenuItem(
-                        text = { Text(if (favorito) "Quitar de favoritos" else "Favoritos") },
-                        leadingIcon = { Icon(if (favorito) Icons.Default.Favorite else Icons.Default.FavoriteBorder, null) },
-                        onClick = { onFavorito(producto.id); expandido = false }
-                    )
-                    HorizontalDivider()
-                    DropdownMenuItem(text = { Text("Compartir") }, leadingIcon = { Icon(Icons.Default.Share, null) }, onClick = { expandido = false })
-                    HorizontalDivider()
-                    DropdownMenuItem(text = { Text("Reportar") }, leadingIcon = { Icon(Icons.Default.Warning, null) }, onClick = { expandido = false })
-                }
-            }
-        }
-    }
+    reportado?.let { producto -> AlertDialog(onDismissRequest = { reportado = null },
+        title = { Text("Reportar ${producto.nombre}") }, text = { Text("Registrar una observación local de demostración para este producto") },
+        confirmButton = { TextButton(onClick = { mensaje = "Reporte local registrado para ${producto.nombre}"; reportado = null }) { Text("Confirmar reporte") } },
+        dismissButton = { TextButton(onClick = { reportado = null }) { Text("Cancelar") } }) }
+    if (mensaje.isNotEmpty()) AlertDialog(onDismissRequest = { mensaje = "" }, title = { Text("Resultado") }, text = { Text(mensaje) },
+        confirmButton = { TextButton(onClick = { mensaje = "" }) { Text("Aceptar") } })
 }
