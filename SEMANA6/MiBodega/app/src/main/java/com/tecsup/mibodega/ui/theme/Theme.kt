@@ -2,6 +2,7 @@ package com.tecsup.mibodega.ui.theme
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.lightColorScheme
+import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
 
 private val BodegaColorScheme = lightColorScheme(
@@ -19,9 +20,9 @@ private val BodegaColorScheme = lightColorScheme(
 )
 
 @Composable
-fun BodegaTheme(content: @Composable () -> Unit) {
+fun BodegaTheme(oscuro: Boolean = false, content: @Composable () -> Unit) {
     MaterialTheme(
-        colorScheme = BodegaColorScheme,
+        colorScheme = if (oscuro) darkColorScheme(primary = VerdeBodega, secondary = AzulEnlace) else BodegaColorScheme,
         typography = BodegaTypography,
         content = content
     )
