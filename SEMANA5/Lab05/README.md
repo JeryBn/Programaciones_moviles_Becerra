@@ -27,7 +27,7 @@ Esta aplicación Android desarrollada con **Kotlin** y **Jetpack Compose** ha si
 * **Componentes:**
   * Tarjeta de encabezado estilo *Hero* con un distintivo que destaca el identificador o texto recibido (`"Elemento #$itemId"`).
   * Tarjeta contenedora de información que organiza los datos en secciones (`InfoRow`):
-    * **ID / Texto recibido:** Parámetro capturado de la navegación.
+    * **ID entero recibido:** Parámetro capturado de la navegación.
     * **Estado:** Indicador dinámico visual ("Disponible").
     * **Categoría:** Etiqueta del componente ("Componente Tecsup").
   * Botón inferior delineado para regresar a la lista fácilmente.
@@ -114,3 +114,48 @@ app/src/main/java/com/example/lab05/
     └── Type.kt              # Estilos de tipografía
 ```
 
+
+
+## Preparación de evaluación · 6 de octubre de 2026
+
+La navegación del detalle usa ahora `NavType.IntType`, `getInt` y `createRoute(itemId: Int)`, como indica la guía. El README anterior describe el diseño visual; este apartado describe el comportamiento final.
+
+### Exactamente cuatro requerimientos funcionales
+
+| ID | Función |
+|---|---|
+| RF-01 | Consultar Inicio y elegir una sección |
+| RF-02 | Consultar la lista de ocho elementos |
+| RF-03 | Abrir detalle del elemento seleccionado y regresar |
+| RF-04 | Consultar Perfil y volver a Inicio |
+
+### Recorrido y modificaciones
+
+MainActivity -> AppNavigation -> HomeScreen. HomeScreen recibe dos callbacks (abrirLista, abrirPerfil); no depende de NavController. La lista genera IDs 1..8, llama navigate(detail/ID), NavHost obtiene getInt y DetailScreen muestra el ID. Atrás usa popBackStack; Perfil retorna a home con popUpTo.
+
+`MarcoPantalla.kt` organiza TopBar/contenido. Scaffold entrega PaddingValues a la pantalla. La alternativa Column mantiene TopBar y Box(weight(1f)); el contenido recibe padding cero porque las barras ya ocupan espacio. Las pantallas conservan su separación visual.
+
+`Practica.kt` permite USAR_SCAFFOLD=false, USAR_NAVEGACION=false o USAR_LAZY_COLUMN=false. Sin navegación se muestra HomeScreen({}, {}) y no se crea NavController. Sin listas Lazy, ListScreen usa Column/verticalScroll con las mismas tarjetas y callbacks. Lab05 no necesita inventar una LazyRow: esa práctica se hace en TECSUP Fit o Semana 6.
+
+Retirar físicamente Scaffold: conservar la rama Surface/Column en MarcoPantalla, retirar la rama Scaffold y el condicional. Retirar navegación: conservar HomeScreen({}, {}) en AppNavigation y quitar NavHost y NavController. Quitar LazyColumn: conservar Column/forEachIndexed de ListScreen. Restaurar antes de seguir.
+
+Observación 1: el ID previo era String y se corrigió a Int. Observación 2: HomeScreen estaba unido al controlador; ahora usa callbacks.
+
+Conclusión 1: un dato tipado evita convertir el ID en cada pantalla. Conclusión 2: desacoplar contenido y navegación permite modificar la estructura sin perder el flujo.
+
+## Autoría y fases de Git
+
+La preparación del 6 de octubre de 2026 se realizó con asistencia de IA solicitada por el estudiante. Los commits registran modificaciones reales con sus fechas reales. No acreditan una fase sin IA ni reemplazan una sustentación individual. No se cambiaron fechas, autores ni el historial anterior.
+
+La guía exige fases en `main` y `mejora-ia`. Se conserva el historial de ambas. La reparación actual no puede demostrar retroactivamente trabajo sin IA ni commits distribuidos en días anteriores. El docente debe valorar esa diferencia. Los prompts de esta preparación se registran en `PROMPTS-EVALUACION.md` en la raíz.
+
+## Ejecutar y comprobar
+
+Abrir la carpeta de este proyecto Gradle en Android Studio, sincronizar, seleccionar el JDK integrado y un emulador API 24 o superior. La configuración usa SDK 37, AGP 9.3.3 y Gradle 9.5.0. La ruta local del SDK se configura en `local.properties` o en `ANDROID_HOME`; no se versiona.
+
+```powershell
+.\gradlew.bat assembleDebug testDebugUnitTest
+.\gradlew.bat connectedDebugAndroidTest lintDebug
+```
+
+La segunda comprobación necesita un dispositivo. Consultar `VERIFICACION-EVALUACION.md` en la raíz para los resultados reales de esta preparación. Los APK y reportes se generan en `app/build/`; no se suben como código fuente.

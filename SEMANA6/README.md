@@ -1,62 +1,32 @@
-# Semana 6 - Menu y navegacion en Android
+# Semana 6 · Laboratorio y tarea complementaria
 
-Esta carpeta contiene los dos desarrollos solicitados por la guia GLAB-S06:
+| Proyecto | Trabajo solicitado | Funcionamiento y código |
+|---|---|---|
+| Laboratorio06 | TECSUP Store, DropdownMenu, NavigationDrawer y contador de favoritos | [README completo](Laboratorio06/README.md) |
+| MiBodega | App cliente, NavigationBar, compra, filtros y mejoras indicadas en Canvas | [README completo](MiBodega/README.md) |
 
-- `Laboratorio06`: TECSUP Store con menu contextual por producto y `ModalNavigationDrawer`.
-- `MiBodega`: app cliente de siete pantallas con `NavigationBar`, categorias, productos, carrito, entrega y confirmacion.
+Cada proyecto define exactamente cuatro requerimientos funcionales. Los criterios técnicos se documentan como implementación. Cada pantalla conserva un archivo; los componentes compartidos y rutas están separados.
 
-## Como ejecutar
+## Cobertura de las 11 mejoras de Canvas
 
-1. Abrir en Android Studio la carpeta del proyecto elegido.
-2. Esperar la sincronizacion de Gradle.
-3. Seleccionar un emulador Android API 24 o superior.
-4. Ejecutar la configuracion `app`.
+| Mejora | Archivo principal en MiBodega |
+|---|---|
+| Login fijo y error | BienvenidaScreen.kt + Pedido.kt |
+| Campos obligatorios en rojo | RegistroScreen.kt y DatosEntregaScreen.kt |
+| Badge del carrito | Estructura.kt |
+| Mensaje de carrito vacío | CarritoScreen.kt |
+| AlertDialog antes de eliminar | CarritoScreen.kt |
+| Historial Mis pedidos | ClienteApp.kt + PedidosScreen.kt / PerfilScreen.kt |
+| Corazones y sección Favoritos | InicioScreen.kt, DetalleProductoScreen.kt y ClienteApp.kt |
+| Orden por precio | InicioScreen.kt |
+| Recojo/delivery con RadioButton | DatosEntregaScreen.kt + totalEntrega |
+| Switch oscuro en Perfil | PedidosScreen.kt / PerfilScreen.kt + Theme.kt |
+| Transiciones de pantalla | NavHost en ClienteApp.kt; AnimatedContent para el resumen en confirmación |
 
-Verificacion por consola en cada proyecto:
+## Rúbrica y límites reales
 
-```powershell
-.\gradlew.bat testDebugUnitTest assembleDebug --console=plain
-```
+El laboratorio tiene menú contextual, personalización, drawer, destinos, encabezado y contador compartido. Mi Bodega completa siete pantallas base, NavigationBar con cuatro destinos, LazyColumn/LazyRow, parámetros, carrito reactivo, búsqueda combinada y popUpTo. Cada README incluye reflexión y dos observaciones y dos conclusiones.
 
-## Proceso realizado
+La guía exige commits mínimos en las fases sin IA/con IA. Los cambios del 6 de octubre registran asistencia y reparación; no pueden acreditar retroactivamente una fase sin IA ni cumplimiento de fechas ya vencidas. Los ocho commits históricos de Semana 6 no eran ocho commits por cada proyecto. No se rellenó el historial con commits vacíos ni se alteraron fechas.
 
-1. Se preservo el proyecto de la Semana 5 y se creo una copia evolutiva para el Laboratorio 06.
-2. Se agrego el icono de tres puntos dentro de cada tarjeta y un `DropdownMenu` anclado en el mismo `Box`.
-3. Se incorporaron las acciones Favoritos, Compartir y Reportar, cada una con icono y separadores.
-4. Se envolvio el `Scaffold` con `ModalNavigationDrawer` y se agregaron encabezado de usuario, cinco destinos y seleccion visual.
-5. El estado de favoritos se elevo al contenedor principal para que el menu contextual y el badge del drawer compartan la misma fuente de verdad.
-6. Se importo el esqueleto de Mi Bodega y se completaron sus siete pantallas sin servidor ni base de datos.
-7. Se conecto el flujo Bienvenida -> Registro -> Inicio -> Detalle -> Carrito -> Datos de entrega -> Confirmacion.
-8. Se implementaron `LazyRow` para categorias, cuadricula perezosa de productos, `NavigationBar`, paso de `productoId` y `popUpTo` al finalizar.
-9. Se implemento un carrito reactivo con agregar, incrementar, disminuir, eliminar, subtotal, delivery y total.
-10. Se agregaron pruebas unitarias para favoritos, filtro combinado y calculo del total; ambos proyectos compilan y generan APK debug.
-
-## Respuestas de reflexion
-
-El `DropdownMenu` se declara dentro de un `Box` junto al boton porque Compose usa ese contenedor como ancla visual. Si se declarara lejos del icono, su posicion ya no representaria la tarjeta que origino la accion.
-
-Las opciones del menu contextual afectan un solo producto porque reciben su identificador. Los destinos del drawer cambian el contenido principal de toda la aplicacion y por eso su alcance es global.
-
-El contador de favoritos funciona mediante elevacion de estado: el conjunto de identificadores vive en `TecsupStoreApp`, la tarjeta envia eventos y el drawer lee el mismo conjunto. No se duplican estados.
-
-En Mi Bodega, el filtro de categoria y el buscador se calculan en una unica funcion pura. Por eso ambos criterios se aplican juntos en cada recomposicion.
-
-El total no requiere un boton de recalculo: se deriva de la lista y las cantidades actuales. Al cambiar el carrito, Compose vuelve a calcular subtotal y total.
-
-`navigate` agrega una pantalla al historial; `popUpTo` elimina las pantallas de compra ya completadas para impedir que el boton Atras regrese a una confirmacion anterior.
-
-## Observaciones
-
-1. El esqueleto de Mi Bodega traia las pantallas de entrega y confirmacion vacias, y la navegacion terminaba en el carrito; fue necesario completar ambos archivos y extender el `NavHost`.
-2. La version inicial del esqueleto usaba un Gradle incompatible con el JDK actual de Android Studio; se actualizo la toolchain y se valido nuevamente la compilacion.
-
-## Conclusiones
-
-1. Los componentes locales, como `DropdownMenu`, deben mantener su estado de apertura cerca de la tarjeta, mientras que la informacion compartida, como favoritos o carrito, debe elevarse a un contenedor comun.
-2. Trabajar desde un esqueleto reduce el tiempo de configuracion, pero exige revisar cada `TODO`, conectar el flujo completo y comprobar compilacion y pruebas; la fase de mejora permite aislar y revisar el cambio asistido.
-
-## Estado de verificacion
-
-- Laboratorio06: `testDebugUnitTest` y `assembleDebug` correctos.
-- MiBodega: `testDebugUnitTest` y `assembleDebug` correctos.
-- La app usa solo colecciones en memoria, tal como delimita la guia.
+Consultar [práctica guiada](../PRACTICA-EVALUACION.md), [registro de asistencia](../PROMPTS-EVALUACION.md) y [verificación](../VERIFICACION-EVALUACION.md).
