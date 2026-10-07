@@ -13,7 +13,7 @@ import com.tecsup.mibodega.ui.cliente.modelo.*
 
 @Composable
 fun DatosEntregaScreen(carrito: List<ItemCarrito>, onVolver: () -> Unit,
-    onConfirmar: (String, String, Boolean) -> Unit) {
+    onConfirmar: (DatosEntrega) -> Unit) {
     var nombre by rememberSaveable { mutableStateOf("") }
     var telefono by rememberSaveable { mutableStateOf("") }
     var direccion by rememberSaveable { mutableStateOf("") }
@@ -21,7 +21,7 @@ fun DatosEntregaScreen(carrito: List<ItemCarrito>, onVolver: () -> Unit,
     var pago by rememberSaveable { mutableStateOf("Efectivo") }
     var recojo by rememberSaveable { mutableStateOf(false) }
     var enviado by rememberSaveable { mutableStateOf(false) }
-    val valido = nombre.isNotBlank() && telefono.isNotBlank() && (recojo || direccion.isNotBlank())
+    val valido = nombre.isNotBlank() && telefono.isNotBlank() && (recojo || (direccion.isNotBlank() && referencia.isNotBlank()))
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
         OutlinedTextField(nombre, { nombre = it }, label = { Text("Nombre") }, isError = enviado && nombre.isBlank(), modifier = Modifier.fillMaxWidth())
         OutlinedTextField(telefono, { telefono = it }, label = { Text("Teléfono") }, isError = enviado && telefono.isBlank(), modifier = Modifier.fillMaxWidth())
@@ -29,13 +29,13 @@ fun DatosEntregaScreen(carrito: List<ItemCarrito>, onVolver: () -> Unit,
         Row { RadioButton(recojo, { recojo = true }, modifier = Modifier.semantics { contentDescription = "Elegir recojo" }); Text("Recojo en tienda (gratis)") }
         if (!recojo) {
             OutlinedTextField(direccion, { direccion = it }, label = { Text("Dirección") }, isError = enviado && direccion.isBlank(), modifier = Modifier.fillMaxWidth())
-            OutlinedTextField(referencia, { referencia = it }, label = { Text("Referencia (opcional)") }, modifier = Modifier.fillMaxWidth())
+            OutlinedTextField(referencia, { referencia = it }, label = { Text("Referencia") }, isError = enviado && referencia.isBlank(), modifier = Modifier.fillMaxWidth())
         }
         Text("Método de pago (demostración)")
         Row { listOf("Efectivo", "Yape", "Plin").forEach { opcion -> FilterChip(pago == opcion, { pago = opcion }, label = { Text(opcion) }) } }
         Text("Total: S/ %.2f".format(totalEntrega(carrito, recojo)), style = MaterialTheme.typography.titleLarge)
         if (enviado && !valido) Text("Completa los campos marcados en rojo", color = MaterialTheme.colorScheme.error)
-        Button(onClick = { enviado = true; if (valido && carrito.isNotEmpty()) onConfirmar(nombre, if (recojo) "Recojo en tienda" else direccion, recojo) }, enabled = carrito.isNotEmpty()) { Text("Confirmar pedido") }
+        Button(onClick = { enviado = true; if (valido && carrito.isNotEmpty()) onConfirmar(DatosEntrega(nombre, telefono, if (recojo) "Recojo en tienda" else direccion, if (recojo) "" else referencia, recojo, pago)) }, enabled = carrito.isNotEmpty()) { Text("Confirmar pedido") }
         TextButton(onClick = onVolver) { Text("Volver al carrito") }
     }
 }

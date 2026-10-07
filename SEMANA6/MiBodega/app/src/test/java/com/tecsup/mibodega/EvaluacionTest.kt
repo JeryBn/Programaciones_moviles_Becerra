@@ -7,7 +7,10 @@ class EvaluacionTest {
         assertFalse(credencialesValidas("", "")); assertFalse(credencialesValidas("jery", "mal")); assertTrue(credencialesValidas("jery", "1234"))
     }
     @Test fun formulariosExigenLosCamposObligatorios() {
-        assertFalse(formularioValido(" ", "987", "Av. A")); assertFalse(formularioValido("Jery", "", "Av. A")); assertTrue(formularioValido("Jery", "987", "Av. A"))
+        assertFalse(formularioValido(" ", "987", "Av. A", "Parque"))
+        assertFalse(formularioValido("Jery", "", "Av. A", "Parque"))
+        assertFalse(formularioValido("Jery", "987", "Av. A", ""))
+        assertTrue(formularioValido("Jery", "987", "Av. A", "Parque"))
     }
     @Test fun recojoEliminaDeliveryYVacioNoCobra() {
         val carrito = listOf(ItemCarrito(listaProductosFake.first(), 2))

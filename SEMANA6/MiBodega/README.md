@@ -6,7 +6,7 @@ App cliente en Kotlin y Jetpack Compose Material 3. Productos, carrito, favorito
 
 | ID | Función que necesita el usuario | Resultado observable |
 |---|---|---|
-| RF-01 | Acceder a la app o registrar sus datos | Login valida `jery / 1234`; Crear cuenta exige nombre, teléfono y dirección y marca vacíos en rojo. Referencia es opcional. |
+| RF-01 | Acceder a la app o registrar sus datos | Login valida `jery / 1234`; Crear cuenta exige nombre, teléfono y dirección y marca vacíos en rojo. Referencia también es obligatoria. |
 | RF-02 | Consultar, buscar, ordenar y marcar productos favoritos | Categoría y búsqueda se combinan; orden por precio; detalle por ID y favoritos compartidos entre catálogo, detalle y sección Favoritos. |
 | RF-03 | Gestionar el carrito y confirmar una compra | Agregar, cambiar cantidad y confirmar eliminación; carrito vacío; contador; delivery o recojo con total reactivo; datos obligatorios y resumen de compra. |
 | RF-04 | Consultar pedidos y perfil y ajustar la apariencia | Historial de pedidos confirmados, cuatro destinos inferiores, Switch oscuro y cierre de sesión que limpia datos. |
@@ -16,13 +16,13 @@ Scaffold, NavHost, íconos, padding, LazyColumn, LazyRow, Material 3 y degradado
 ## Funcionamiento completo, paso a paso
 
 1. Iniciar: un login incorrecto muestra error y no entra al catálogo. Cuenta didáctica: usuario `jery`, contraseña `1234`.
-2. Crear cuenta: enviar vacío muestra campos rojos. Completar nombre, teléfono y dirección permite ingresar. Es registro local; no crea una cuenta en un servidor. Referencia es opcional.
+2. Crear cuenta: enviar vacío muestra campos rojos. Completar nombre, teléfono, dirección y referencia permite ingresar. Es registro local; no crea una cuenta en un servidor. Referencia también es obligatoria.
 3. Inicio: LazyRow de categorías Todos/Bebidas/Abarrotes/Snacks; LazyColumn de tarjetas. Buscar actualiza la lista a medida que escribes y conserva el filtro de categoría. Tolera tildes, espacios y mayúsculas. Elegir precio ascendente o descendente reordena el resultado.
 4. Cada corazón modifica el conjunto compartido de IDs favoritos. La pestaña Favoritos lista esos productos; el corazón del detalle modifica el mismo conjunto.
 5. Ver detalle transmite `productoId` como Int por `detalle/{productoId}`. Elegir cantidad y agregar lleva al carrito. Un ID inexistente muestra mensaje, sin acceder a `first()` de una lista vacía.
 6. Agregar repetidamente acumula cantidades. El badge de la topBar cuenta unidades, no clases distintas de producto.
 7. Carrito: sumar/restar actualiza subtotal y total. Restar desde uno solicita la misma confirmación que eliminar. Cancelar conserva el producto; confirmar lo elimina. Carrito vacío muestra mensaje, costo cero e impide continuar.
-8. Datos de entrega: nombre y teléfono obligatorios; dirección obligatoria para delivery. Recojo no exige dirección porque se usa la tienda. RadioButton determina una sola modalidad. Delivery añade S/ 4; recojo añade S/ 0. Los métodos Efectivo/Yape/Plin son demostración, no pagos reales.
+8. Datos de entrega: nombre y teléfono obligatorios; dirección y referencia obligatorias para delivery. Recojo no exige dirección porque se usa la tienda. RadioButton determina una sola modalidad. Delivery añade S/ 4; recojo añade S/ 0. Los métodos Efectivo/Yape/Plin son demostración, no pagos reales.
 9. Confirmar crea una copia de los items del carrito dentro de Pedido, guarda el historial y vacía el carrito. La pantalla muestra el número real, items, destinatario y total de ese pedido. `popUpTo("inicio")` retira los formularios completados para evitar reenvíos con Atrás.
 10. Inicio, Favoritos, Mis pedidos y Perfil navegan de forma explícita; el destino actual determina el ícono resaltado. Perfil contiene el Switch oscuro. Cerrar sesión borra el estado de demostración y regresa al login.
 11. NavHost usa transiciones de entrada y salida (su contenido animado cambia al navegar); `AnimatedContent` dentro de la ruta de confirmación presenta el resumen del pedido. No se duplica NavHost dentro de una animación.
@@ -91,3 +91,4 @@ Abrir la carpeta de este proyecto Gradle en Android Studio, sincronizar, selecci
 ```
 
 La segunda comprobación necesita un dispositivo. Consultar `VERIFICACION-EVALUACION.md` en la raíz para los resultados reales de esta preparación. Los APK y reportes se generan en `app/build/`; no se suben como código fuente.
+

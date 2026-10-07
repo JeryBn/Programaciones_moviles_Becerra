@@ -80,8 +80,8 @@ fun ClienteApp() {
                     composable("carrito") { CarritoScreen(carrito, { nav.popBackStack() },
                         { agregar(it, 1) }, { p -> carrito = carrito.map { if (it.producto.id == p.id) it.copy(cantidad = (it.cantidad - 1).coerceAtLeast(1)) else it } },
                         { p -> carrito = carrito.filterNot { it.producto.id == p.id } }, { if (carrito.isNotEmpty()) navegar("entrega") }) }
-                    composable("entrega") { DatosEntregaScreen(carrito, { nav.popBackStack() }) { n, direccion, recojo ->
-                        val pedido = Pedido((pedidos.maxOfOrNull { it.id } ?: 0) + 1, carrito.toList(), n, direccion, recojo, totalEntrega(carrito, recojo))
+                    composable("entrega") { DatosEntregaScreen(carrito, { nav.popBackStack() }) { datos ->
+                        val pedido = Pedido((pedidos.maxOfOrNull { it.id } ?: 0) + 1, carrito.toList(), datos.nombre, datos.direccion, datos.recojo, totalEntrega(carrito, datos.recojo), datos.telefono, datos.referencia, datos.pago)
                         pedidos = pedidos + pedido; ultimoPedido = pedido; carrito = emptyList()
                         nav.navigate("confirmacion") { popUpTo("inicio") { inclusive = false }; launchSingleTop = true }
                     } }

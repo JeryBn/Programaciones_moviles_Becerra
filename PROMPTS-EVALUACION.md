@@ -16,8 +16,9 @@ El estudiante indicó que necesita ayuda en las tres áreas: modificar código, 
 
 ## Correcciones durante la asistencia
 
-Se mantuvo un solo conjunto de favoritos, una copia de los items al confirmar Pedido, una estructura externa al NavHost y la animación sin duplicar controladores. Se ajustó la prueba de recojo a una descripción accesible estable. La selección de referencia se dejó opcional; dirección es obligatoria para delivery y no para recojo.
+Se mantuvo un solo conjunto de favoritos, una copia de los items al confirmar Pedido, una estructura externa al NavHost y la animación sin duplicar controladores. Se ajustó la prueba de recojo a una descripción accesible estable. La selección de referencia también se exige cuando el formulario la muestra; dirección es obligatoria para delivery y no para recojo.
 
 ## Declaración
 
 Este trabajo fue asistido. Las pruebas no demuestran comprensión individual; el estudiante debe practicar y explicar cada cambio. Los commits son avances reales de esta fecha. No se declara que la reparación fue escrita sin IA ni se simulan fechas, autores o desarrollo anterior. Las fases históricas y su evidencia siguen en Git; la reparación no garantiza la puntuación de autoría, puntualidad o sustentación.
+
