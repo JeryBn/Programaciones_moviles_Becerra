@@ -39,7 +39,7 @@ class ImagenesProductoTest {
             compose.onNodeWithText("Buscar productos").performTextClearance()
             compose.onNodeWithText("Buscar productos").performTextInput(producto.nombre)
             compose.onNodeWithContentDescription("Imagen de ${producto.nombre}").assertIsDisplayed()
-            compose.onNodeWithText(producto.nombre, substring = false).assertIsDisplayed()
+            compose.onNode(hasText(producto.nombre, substring = false) and !hasSetTextAction()).assertIsDisplayed()
         }
     }
 
