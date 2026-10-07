@@ -23,9 +23,9 @@ fun RegistroScreen(onVolver: () -> Unit, onCrearCuenta: (String, String, String,
         OutlinedTextField(nombre, { nombre = it }, label = { Text("Nombre") }, isError = enviado && nombre.isBlank(), modifier = Modifier.fillMaxWidth())
         OutlinedTextField(telefono, { telefono = it }, label = { Text("Teléfono") }, isError = enviado && telefono.isBlank(), modifier = Modifier.fillMaxWidth())
         OutlinedTextField(direccion, { direccion = it }, label = { Text("Dirección") }, isError = enviado && direccion.isBlank(), modifier = Modifier.fillMaxWidth())
-        OutlinedTextField(referencia, { referencia = it }, label = { Text("Referencia (opcional)") }, modifier = Modifier.fillMaxWidth())
-        if (enviado && !formularioValido(nombre, telefono, direccion)) Text("Completa los campos marcados en rojo", color = MaterialTheme.colorScheme.error)
-        Button(onClick = { enviado = true; if (formularioValido(nombre, telefono, direccion)) onCrearCuenta(nombre, telefono, direccion, referencia) }) { Text("Crear cuenta") }
+        OutlinedTextField(referencia, { referencia = it }, label = { Text("Referencia") }, isError = enviado && referencia.isBlank(), modifier = Modifier.fillMaxWidth())
+        if (enviado && !formularioValido(nombre, telefono, direccion, referencia)) Text("Completa los campos marcados en rojo", color = MaterialTheme.colorScheme.error)
+        Button(onClick = { enviado = true; if (formularioValido(nombre, telefono, direccion, referencia)) onCrearCuenta(nombre, telefono, direccion, referencia) }) { Text("Crear cuenta") }
         TextButton(onClick = onVolver) { Text("Volver") }
     }
 }

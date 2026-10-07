@@ -16,6 +16,8 @@ fun ConfirmacionScreen(total: Double, onVolverInicio: () -> Unit, pedido: Pedido
         Text("Pedido realizado", style = MaterialTheme.typography.headlineMedium)
         pedido?.let {
             Text("Pedido #${it.id}"); Text("${it.nombre} · ${it.direccion}")
+            Text("Teléfono: ${it.telefono} · Pago: ${it.pago}")
+            if (it.referencia.isNotBlank()) Text("Referencia: ${it.referencia}")
             it.items.forEach { item -> Text("${item.cantidad} × ${item.producto.nombre}") }
         }
         Text("Confirmación local de demostración")
