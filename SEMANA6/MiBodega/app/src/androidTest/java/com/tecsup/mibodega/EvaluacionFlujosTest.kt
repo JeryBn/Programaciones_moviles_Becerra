@@ -15,11 +15,11 @@ class EvaluacionFlujosTest {
     private fun login() {
         compose.onNodeWithText("Usuario").performTextInput("jery")
         compose.onNodeWithText("Contraseña").performTextInput("1234")
-        compose.onNodeWithText("Iniciar sesión").performScrollTo().performClick()
+        compose.onNode(hasText("Iniciar sesión") or hasText("Entrar en mi Bodega")).performScrollTo().performClick()
         compose.onNodeWithText("Buscar productos", useUnmergedTree = true).assertIsDisplayed()
     }
     @Test fun rechazaLoginYRegistroVacios() {
-        abrir(); compose.onNodeWithText("Iniciar sesión").performClick()
+        abrir(); compose.onNode(hasText("Iniciar sesión") or hasText("Entrar en mi Bodega")).performClick()
         compose.onNodeWithText("Usuario o contraseña incorrectos").assertIsDisplayed()
         compose.onNodeWithText("Crear cuenta").performClick()
         compose.onNode(hasText("Crear cuenta") and hasClickAction()).performClick()
