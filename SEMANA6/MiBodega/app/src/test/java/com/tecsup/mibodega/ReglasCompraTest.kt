@@ -14,4 +14,9 @@ class ReglasCompraTest {
         val resultado = filtrarProductos(listaProductosFake, "Bebidas", "coca")
         assertEquals(listOf("Coca-Cola Original"), resultado.map { it.nombre })
     }
+
+    @Test fun `busqueda ignora mayusculas espacios y tildes`() {
+        val productos = listOf(Producto(9, "Café premium", "", 12.0, "Bebidas"))
+        assertEquals(1, filtrarProductos(productos, "Bebidas", "  CAFE ").size)
+    }
 }
