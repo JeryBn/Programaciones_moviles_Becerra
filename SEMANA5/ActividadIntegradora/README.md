@@ -178,3 +178,8 @@ No subir `.gradle`, `build`, `local.properties`, credenciales ni claves. Consult
 - [Listas y cuadrículas](https://developer.android.com/develop/ui/compose/lists)
 - [Navegación con Compose](https://developer.android.com/develop/ui/compose/navigation)
 - [Estado en Compose](https://developer.android.com/develop/ui/compose/state)
+
+
+## Evaluación de octubre de 2026
+
+Conserva los cuatro requerimientos funcionales RF-01..RF-04 de este README. Los componentes técnicos no son funciones adicionales. La cancelación asistida se conserva en mejora-ia. Consultar [práctica conjunta](../../PRACTICA-EVALUACION.md), [asistencia de esta preparación](../../PROMPTS-EVALUACION.md) y [resultados actuales](../../VERIFICACION-EVALUACION.md). Las instrucciones anteriores de sustentación son prácticas orientativas; la fecha de evaluación informada ahora es el 7 de octubre.

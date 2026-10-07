@@ -19,3 +19,7 @@ Este repositorio organiza los laboratorios del curso por semana. Cada carpeta `S
 - `mejora-ia`: mejora posterior con validación de campos y botón Limpiar, documentada en su README. Esta rama conserva los tres commits requeridos para la Parte B.
 
 No se usan repositorios anidados dentro de las semanas. Para abrir un laboratorio en Android Studio, selecciona la carpeta del proyecto Gradle correspondiente.
+
+## Evaluación de semanas 5 y 6
+
+[Semana 5](SEMANA5/README.md) · [Semana 6](SEMANA6/README.md) · [Práctica guiada](PRACTICA-EVALUACION.md) · [Asistencia declarada](PROMPTS-EVALUACION.md) · [Verificación actual](VERIFICACION-EVALUACION.md). Cada aplicación define cuatro requerimientos funcionales; sus README explican funcionamiento y componentes técnicos por separado.

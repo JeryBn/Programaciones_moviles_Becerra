@@ -10,3 +10,7 @@ Lee el [README de la actividad](ActividadIntegradora/README.md) para el funciona
 Se conserva el código previo de Lab05; se agregaron los archivos Gradle raíz que faltaban para abrirlo independientemente. El archivo vacío originalmente llamado `Lab05` se conserva dentro del laboratorio como `Lab05-original.txt`.
 
 La nueva actividad se elaboró con asistencia de IA declarada en [PROMPTS.md](ActividadIntegradora/PROMPTS.md). La rama `main` contiene la base y `mejora-ia` añade cancelación con confirmación. Esta organización no acredita una fase sin IA.
+
+## Preparación de evaluación
+
+Consulta [práctica de semanas 5 y 6](../PRACTICA-EVALUACION.md), los README de cada proyecto y [verificación actual](../VERIFICACION-EVALUACION.md). Lab05 ahora tiene ID Int y variantes para retirar Scaffold, navegación y LazyColumn. TECSUP Fit conserva sus cuatro funciones y las alternativas explicadas en su README.
