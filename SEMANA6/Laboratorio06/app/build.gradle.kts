@@ -10,7 +10,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.lab05"
+        applicationId = "com.example.lab06"
         minSdk = 24
         targetSdk = 37
         versionCode = 1
@@ -36,6 +36,7 @@ android {
 }
 
 dependencies {
+    implementation("androidx.concurrent:concurrent-futures:1.2.0")
     implementation("androidx.navigation:navigation-compose:2.10.1")
     implementation("androidx.compose.material:material-icons-extended:1.7.8")
     implementation(platform(libs.androidx.compose.bom))
