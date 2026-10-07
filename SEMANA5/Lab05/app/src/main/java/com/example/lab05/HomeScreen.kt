@@ -27,8 +27,8 @@ import com.example.lab05.components.PrimaryActionCard
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(navController: NavController) {
-    Scaffold(
+fun HomeScreen(abrirLista: () -> Unit, abrirPerfil: () -> Unit) {
+    MarcoPantalla(
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
@@ -150,7 +150,7 @@ fun HomeScreen(navController: NavController) {
                     iconBackgroundColor = MaterialTheme.colorScheme.primaryContainer,
                     iconColor = MaterialTheme.colorScheme.primary
                 ) {
-                    navController.navigate(Screen.List.route)
+                    abrirLista()
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -163,14 +163,14 @@ fun HomeScreen(navController: NavController) {
                     iconBackgroundColor = MaterialTheme.colorScheme.secondaryContainer,
                     iconColor = MaterialTheme.colorScheme.secondary
                 ) {
-                    navController.navigate(Screen.Profile.route)
+                    abrirPerfil()
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 // Acción secundaria adicional de perfil
                 OutlinedButton(
-                    onClick = { navController.navigate(Screen.Profile.route) },
+                    onClick = { abrirPerfil() },
                     shape = RoundedCornerShape(16.dp),
                     modifier = Modifier
                         .fillMaxWidth()

@@ -27,7 +27,7 @@ import com.example.lab05.components.InfoRow
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailScreen(navController: NavController, itemId: Int) {
-    Scaffold(
+    MarcoPantalla(
         topBar = {
             TopAppBar(
                 title = {

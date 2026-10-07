@@ -9,11 +9,12 @@ import androidx.navigation.navArgument
 
 @Composable
 fun AppNavigation() {
+    if (!Practica.USAR_NAVEGACION) { HomeScreen({}, {}); return }
     val navController = rememberNavController()
 
     NavHost(navController = navController, startDestination = Screen.Home.route) {
         composable(Screen.Home.route) {
-            HomeScreen(navController)
+            HomeScreen({ navController.navigate(Screen.List.route) }, { navController.navigate(Screen.Profile.route) })
         }
         composable(Screen.List.route) {
             ListScreen(navController)
