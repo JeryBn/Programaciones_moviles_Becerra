@@ -16,7 +16,7 @@ class ReglasCompraTest {
     }
 
     @Test fun `busqueda ignora mayusculas espacios y tildes`() {
-        val productos = listOf(Producto(9, "CafÃ© premium", "", 12.0, "Bebidas", com.tecsup.mibodega.R.drawable.coca_cola))
+        val productos = listOf(Producto(9, "Café premium", "", 12.0, "Bebidas", com.tecsup.mibodega.R.drawable.coca_cola))
         assertEquals(1, filtrarProductos(productos, "Bebidas", "  CAFE ").size)
     }
 }

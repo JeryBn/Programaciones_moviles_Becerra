@@ -8,6 +8,6 @@ data class Producto(
     val descripcion: String,
     val precio: Double,
     val categoria: String,
-    @DrawableRes val imagenRes: Int
+    @param:DrawableRes val imagenRes: Int
 )
 
