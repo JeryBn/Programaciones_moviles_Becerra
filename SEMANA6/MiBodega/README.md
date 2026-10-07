@@ -101,3 +101,11 @@ La segunda comprobación necesita un dispositivo. Consultar `VERIFICACION-EVALUA
 ![mibodega-perfil-oscuro](docs/evidencias/mibodega-perfil-oscuro.png)
 
 Resultados y límites: [verificación conjunta](../../VERIFICACION-EVALUACION.md).
+
+## Fotografías locales de los cinco productos
+
+Cada producto tiene su fotografía en Inicio, Favoritos, Detalle y Carrito. Los archivos están incluidos en `app/src/main/res/drawable-nodpi/`: funcionan sin internet y no necesitan permisos de red ni librerías de descarga.
+
+`Producto.imagenRes` identifica la foto; `DatosFake.kt` asigna cada `R.drawable` y `FotoProducto.kt` la muestra con `Image`, `painterResource` y `ContentScale.Fit`, conservando el envase completo. El catálogo conserva sus cinco marcas y precios de demostración. Las descripciones coinciden con las presentaciones fotografiadas.
+
+Consulta las [fuentes de las imágenes](docs/IMAGENES-PRODUCTOS.md). Para practicar un cambio de foto, agrega un archivo con nombre en minúsculas a `drawable-nodpi` y cambia únicamente `imagenRes` del producto. La navegación usa el mismo ID y el carrito mantiene sus cantidades.
