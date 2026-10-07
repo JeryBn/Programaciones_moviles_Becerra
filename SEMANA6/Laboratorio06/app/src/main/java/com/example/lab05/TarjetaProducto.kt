@@ -5,6 +5,7 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 @Composable
 fun TarjetaProducto(producto: ProductoStore, favorito: Boolean, marcar: (Int) -> Unit,
@@ -18,6 +19,7 @@ fun TarjetaProducto(producto: ProductoStore, favorito: Boolean, marcar: (Int) ->
                     IconButton(onClick = { expandido = true }) { Icon(Icons.Default.MoreVert, "Opciones de ${producto.nombre}") }
                     DropdownMenu(expandido, { expandido = false }) {
                         DropdownMenuItem(text = { Text(if (favorito) "Quitar de favoritos" else "Favoritos") },
+                            modifier = Modifier.testTag("favorito-${producto.id}"),
                             leadingIcon = { Icon(if (favorito) Icons.Default.Favorite else Icons.Default.FavoriteBorder, null) },
                             onClick = { marcar(producto.id); expandido = false })
                         HorizontalDivider()
