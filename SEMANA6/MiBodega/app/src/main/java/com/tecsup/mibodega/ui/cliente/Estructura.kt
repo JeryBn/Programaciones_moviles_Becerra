@@ -30,7 +30,7 @@ fun Estructura(titulo: String, ruta: String, cantidad: Int,
     }
     val inferior: @Composable () -> Unit = {
         if (ruta in secciones) NavigationBar {
-            val iconos = listOf(Icons.Default.Home, Icons.Default.Favorite, Icons.Default.ReceiptLong, Icons.Default.Person)
+            val iconos = listOf(Icons.Default.Home, Icons.Default.Favorite, Icons.Default.ReceiptLong, Icons.Default.AccountCircle)
             val nombres = listOf("Inicio", "Favoritos", "Mis pedidos", "Perfil")
             secciones.forEachIndexed { indice, destino ->
                 NavigationBarItem(selected = ruta == destino, onClick = { navegar(destino) },

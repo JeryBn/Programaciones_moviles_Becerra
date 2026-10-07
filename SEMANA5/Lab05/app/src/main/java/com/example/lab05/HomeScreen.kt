@@ -11,6 +11,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.FormatListBulleted
 import androidx.compose.material.icons.rounded.AccountCircle
 import androidx.compose.material.icons.rounded.Code
+import androidx.compose.material.icons.rounded.FormatListBulleted
 import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material.icons.rounded.School
 import androidx.compose.material3.*
@@ -177,7 +178,7 @@ fun HomeScreen(abrirLista: () -> Unit, abrirPerfil: () -> Unit) {
                         .height(52.dp)
                 ) {
                     Icon(
-                        imageVector = Icons.Rounded.Person,
+                        imageVector = Icons.Rounded.FormatListBulleted,
                         contentDescription = null,
                         modifier = Modifier.size(20.dp)
                     )

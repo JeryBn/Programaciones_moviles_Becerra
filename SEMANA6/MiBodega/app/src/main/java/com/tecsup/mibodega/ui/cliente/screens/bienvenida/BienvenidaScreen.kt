@@ -26,7 +26,7 @@ fun BienvenidaScreen(onRegistrarse: () -> Unit, onIniciarSesion: () -> Unit, onT
             visualTransformation = PasswordVisualTransformation(), isError = error,
             singleLine = true, modifier = Modifier.fillMaxWidth())
         if (error) Text("Usuario o contraseña incorrectos", color = MaterialTheme.colorScheme.error)
-        Button(onClick = { if (credencialesValidas(usuario, clave)) onIniciarSesion() else error = true }) { Text("Iniciar sesión") }
+        Button(onClick = { if (credencialesValidas(usuario, clave)) onIniciarSesion() else error = true }) { Text("Entrar en mi Bodega") }
         OutlinedButton(onClick = onRegistrarse) { Text("Crear cuenta") }
         TextButton(onClick = onTerminos) { Text("Información de la demostración") }
     }
