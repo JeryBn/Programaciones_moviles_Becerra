@@ -36,5 +36,11 @@ captura("lab05-detalle")
         val destino = File(contexto.getExternalFilesDir(null), "$nombre.png")
         val bitmap = compose.onRoot().captureToImage().asAndroidBitmap()
         destino.outputStream().use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
+        // UTP desinstala la app al terminar: conservar la captura fuera de sus datos.
+        val instrumento = InstrumentationRegistry.getInstrumentation()
+        instrumento.uiAutomation.executeShellCommand("cp ${destino.absolutePath} /sdcard/Download/$nombre.png").use { descriptor ->
+            java.io.FileInputStream(descriptor.fileDescriptor).use { it.readBytes() }
+        }
+
     }
 }
