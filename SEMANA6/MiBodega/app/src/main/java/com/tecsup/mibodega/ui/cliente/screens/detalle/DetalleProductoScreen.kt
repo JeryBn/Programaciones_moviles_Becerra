@@ -52,7 +52,9 @@ import com.tecsup.mibodega.ui.theme.VerdeBodega
 fun DetalleProductoScreen(
     producto: Producto,
     onVolver: () -> Unit,
-    onAgregarAlCarrito: (Producto, Int) -> Unit
+    onAgregarAlCarrito: (Producto, Int) -> Unit,
+    favorito: Boolean = false,
+    onFavorito: () -> Unit = {}
 ) {
     var cantidad by remember { mutableStateOf(1) }
 
@@ -61,7 +63,7 @@ fun DetalleProductoScreen(
             .fillMaxSize()
             .safeDrawingPadding()
     ) {
-        EncabezadoDetalle(onVolver = onVolver)
+        EncabezadoDetalle(onVolver, favorito, onFavorito)
 
         ImagenProducto()
 
@@ -114,8 +116,7 @@ fun DetalleProductoScreen(
 }
 
 @Composable
-private fun EncabezadoDetalle(onVolver: () -> Unit) {
-    var favorito by remember { mutableStateOf(false) }
+private fun EncabezadoDetalle(onVolver: () -> Unit, favorito: Boolean, onFavorito: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -126,7 +127,7 @@ private fun EncabezadoDetalle(onVolver: () -> Unit) {
         IconButton(onClick = onVolver) {
             Icon(Icons.Default.ArrowBack, contentDescription = "Volver")
         }
-        IconButton(onClick = { favorito = !favorito }) {
+        IconButton(onClick = onFavorito) {
             Icon(if (favorito) Icons.Default.Favorite else Icons.Default.FavoriteBorder, contentDescription = "Favorito", tint = if (favorito) RojoPrecio else MaterialTheme.colorScheme.onSurface)
         }
     }
