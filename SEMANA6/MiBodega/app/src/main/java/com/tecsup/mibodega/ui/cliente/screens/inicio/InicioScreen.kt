@@ -44,7 +44,7 @@ fun InicioScreen(productos: List<Producto> = listaProductosFake, favoritos: Set<
                                 "Favorito ${producto.nombre}")
                         }
                     }
-                    Text("${producto.categoria} Â· S/ %.2f".format(producto.precio))
+                    Text("${producto.categoria} · S/ %.2f".format(producto.precio))
                     Row {
                         TextButton(onClick = { onProductoClick(producto) }) { Text("Ver detalle") }
                         Button(onClick = { onAgregarProducto(producto) }) { Text("Agregar") }
