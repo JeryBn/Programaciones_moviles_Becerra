@@ -31,7 +31,7 @@ import com.tecsup.mibodega.ui.theme.VerdeBodega
 /**
  * Tarjeta de producto usada en el grid de Inicio.
  * Solo muestra datos y avisa cuando la tocan o cuando tocan "+";
- * no sabe nada de navegaciÃ³n ni del carrito.
+ * no sabe nada de navegación ni del carrito.
  */
 @Composable
 fun ProductoCard(

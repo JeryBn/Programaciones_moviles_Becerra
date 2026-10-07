@@ -36,8 +36,8 @@ import com.tecsup.mibodega.ui.theme.RojoPrecio
 /**
  * Pantalla 4: Detalle del producto (mockup "Cliente").
  * Guarda su propia cantidad seleccionada (remember) mientras el usuario
- * decide cuÃ¡nto quiere; solo al tocar "Agregar al carrito" le avisa
- * a ClienteApp cuÃ¡nto agregar.
+ * decide cuánto quiere; solo al tocar "Agregar al carrito" le avisa
+ * a ClienteApp cuánto agregar.
  */
 @Composable
 fun DetalleProductoScreen(

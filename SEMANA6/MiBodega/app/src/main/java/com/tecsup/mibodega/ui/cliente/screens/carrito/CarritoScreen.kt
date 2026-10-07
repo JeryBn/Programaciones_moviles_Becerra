@@ -18,7 +18,7 @@ fun CarritoScreen(carrito: List<ItemCarrito>, onVolver: () -> Unit,
     onEliminar: (Producto) -> Unit, onContinuarPedido: () -> Unit) {
     var pendiente by remember { mutableStateOf<Producto?>(null) }
     Column(Modifier.fillMaxSize()) {
-        if (carrito.isEmpty()) Text("Tu carrito estÃ¡ vacÃ­o", Modifier.padding(20.dp))
+        if (carrito.isEmpty()) Text("Tu carrito está vacío", Modifier.padding(20.dp))
         ListaVertical(carrito, { it.producto.id }, Modifier.weight(1f)) { item ->
             Card(Modifier.fillMaxWidth()) {
                 Column(Modifier.padding(12.dp)) {
@@ -50,7 +50,7 @@ fun CarritoScreen(carrito: List<ItemCarrito>, onVolver: () -> Unit,
     }
     pendiente?.let { producto ->
         AlertDialog(onDismissRequest = { pendiente = null }, title = { Text("Eliminar producto") },
-            text = { Text("Â¿Eliminar ${producto.nombre} del carrito?") },
+            text = { Text("¿Eliminar ${producto.nombre} del carrito?") },
             confirmButton = { TextButton(onClick = { onEliminar(producto); pendiente = null }) { Text("Eliminar") } },
             dismissButton = { TextButton(onClick = { pendiente = null }) { Text("Cancelar") } })
     }

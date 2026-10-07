@@ -6,15 +6,15 @@ import com.tecsup.mibodega.R
  * Datos de ejemplo (fake) para mostrar la UI sin base de datos.
  * Cuando conecten Room o una API, este archivo se reemplaza por
  * un Repository real, pero las pantallas no cambian porque ya
- * reciben una List<Producto> como parÃ¡metro.
+ * reciben una List<Producto> como parámetro.
  */
 val listaCategorias = listOf("Todos", "Bebidas", "Abarrotes", "Snacks")
 
 val listaProductosFake = listOf(
     Producto(
         id = 1,
-        nombre = "Arroz CosteÃ±o",
-        descripcion = "Arroz extra, grano largo, ideal para el dÃ­a a dÃ­a.",
+        nombre = "Arroz Costeño",
+        descripcion = "Arroz extra Costeño, bolsa de 750 g.",
         precio = 4.50,
         categoria = "Abarrotes",
         imagenRes = R.drawable.arroz_costeno
