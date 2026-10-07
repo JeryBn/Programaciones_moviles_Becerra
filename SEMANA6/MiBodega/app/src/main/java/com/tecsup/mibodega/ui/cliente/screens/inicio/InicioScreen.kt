@@ -8,6 +8,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.tecsup.mibodega.ui.componentes.FotoProducto
 import com.tecsup.mibodega.ui.cliente.*
 import com.tecsup.mibodega.ui.cliente.modelo.*
 
@@ -35,6 +36,7 @@ fun InicioScreen(productos: List<Producto> = listaProductosFake, favoritos: Set<
         ListaVertical(visibles, { it.id }, Modifier.weight(1f)) { producto ->
             Card(Modifier.fillMaxWidth()) {
                 Column(Modifier.padding(16.dp)) {
+                    FotoProducto(producto, Modifier.fillMaxWidth().height(128.dp))
                     Row {
                         Text(producto.nombre, Modifier.weight(1f), style = MaterialTheme.typography.titleMedium)
                         IconButton(onClick = { onFavorito(producto.id) }) {
@@ -42,7 +44,7 @@ fun InicioScreen(productos: List<Producto> = listaProductosFake, favoritos: Set<
                                 "Favorito ${producto.nombre}")
                         }
                     }
-                    Text("${producto.categoria} · S/ %.2f".format(producto.precio))
+                    Text("${producto.categoria} Â· S/ %.2f".format(producto.precio))
                     Row {
                         TextButton(onClick = { onProductoClick(producto) }) { Text("Ver detalle") }
                         Button(onClick = { onAgregarProducto(producto) }) { Text("Agregar") }
