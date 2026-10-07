@@ -63,7 +63,7 @@ fun ListScreen(navController: NavController) {
             modifier = Modifier.fillMaxSize()
         ) {
             itemsIndexed(items) { index, itemText ->
-                val itemId = "${index + 1}"
+                val itemId = index + 1
                 ElementCard(
                     title = itemText,
                     subtitle = "Toca para ver el detalle",
