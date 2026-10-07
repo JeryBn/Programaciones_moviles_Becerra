@@ -14,7 +14,7 @@ class StoreFlujosTest {
     private fun abrir() { compose.setContent { Lab05Theme { TecsupStoreApp() } } }
     private fun marcar() {
         compose.onNodeWithContentDescription("Opciones de Audífonos").performClick()
-        compose.onNodeWithText("Favoritos", substring = false).performClick()
+        compose.onNodeWithTag("favorito-1").performClick()
         compose.onNodeWithContentDescription("Abrir menú").performClick()
         compose.onNodeWithContentDescription("1 productos favoritos").assertExists()
 captura("store-favoritos-drawer")

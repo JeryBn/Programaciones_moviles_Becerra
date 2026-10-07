@@ -59,6 +59,23 @@ captura("mibodega-pedido-confirmado")
         compose.onNodeWithText("Eliminar", substring = false).performClick()
         compose.onNodeWithText("Tu carrito está vacío").assertIsDisplayed()
     }
+    @Test fun favoritosCompartenDetalleYElTemaSeConservaAlNavegar() {
+        abrir(); login()
+        compose.onNodeWithContentDescription("Favorito Arroz Costeño").performClick()
+        compose.onNodeWithText("Favoritos", substring = false).performClick()
+        compose.onNodeWithText("Arroz Costeño").assertIsDisplayed()
+        compose.onNodeWithText("Aceite Primor").assertDoesNotExist()
+        compose.onNodeWithText("Ver detalle").performClick()
+        compose.onNodeWithContentDescription("Favorito", substring = false).performClick()
+        compose.onNodeWithContentDescription("Volver").performClick()
+        compose.onNodeWithText("Aún no tienes favoritos").assertIsDisplayed()
+        compose.onNodeWithText("Perfil", substring = false).performClick()
+        compose.onNode(isToggleable()).assertIsOff().performClick().assertIsOn()
+        captura("mibodega-perfil-oscuro")
+        compose.onNodeWithText("Inicio", substring = false).performClick()
+        compose.onNodeWithText("Perfil", substring = false).performClick()
+        compose.onNode(isToggleable()).assertIsOn()
+    }
     @Test fun sinScaffoldContinuaElLoginYLaNavegacion() {
         Practica.USAR_SCAFFOLD = false; abrir(); login()
         compose.onNodeWithText("Perfil", substring = false).performClick(); compose.onNodeWithText("Modo oscuro").assertIsDisplayed()
