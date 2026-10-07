@@ -61,7 +61,7 @@ fun DetalleProductoScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .safeDrawingPadding()
+
     ) {
         EncabezadoDetalle(onVolver, favorito, onFavorito)
 

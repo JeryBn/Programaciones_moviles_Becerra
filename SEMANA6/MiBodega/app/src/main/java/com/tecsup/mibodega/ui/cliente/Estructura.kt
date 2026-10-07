@@ -21,7 +21,7 @@ fun Estructura(titulo: String, ruta: String, cantidad: Int,
         TopAppBar(title = { Text(titulo) }, navigationIcon = {
             if (volver != null) IconButton(onClick = volver) { Icon(Icons.Default.ArrowBack, "Volver") }
         }, actions = {
-            IconButton(onClick = { navegar("carrito") }) {
+            if (ruta != "bienvenida" && ruta != "registro") IconButton(onClick = { navegar("carrito") }) {
                 BadgedBox(badge = { if (cantidad > 0) Badge { Text(cantidad.toString()) } }) {
                     Icon(Icons.Default.ShoppingCart, "Carrito")
                 }
