@@ -25,11 +25,11 @@ fun AppNavigation() {
             route = Screen.DetailScreen.route,
             arguments = listOf(
                 navArgument(name = "itemId") {
-                type = NavType.StringType
-                defaultValue = "default"
+                type = NavType.IntType
+                defaultValue = -1
             })
         ) { backStackEntry ->
-            val itemId = backStackEntry.arguments?.getString("itemId") ?: ""
+            val itemId = backStackEntry.arguments?.getInt("itemId") ?: -1
             DetailScreen(navController, itemId)
         }
     }

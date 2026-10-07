@@ -26,7 +26,7 @@ import com.example.lab05.components.InfoRow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DetailScreen(navController: NavController, itemId: String) {
+fun DetailScreen(navController: NavController, itemId: Int) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -154,7 +154,7 @@ fun DetailScreen(navController: NavController, itemId: String) {
                     // ID / Texto recibido
                     InfoRow(
                         label = "Texto / ID recibido",
-                        value = itemId,
+                        value = itemId.toString(),
                         icon = Icons.Rounded.Tag
                     )
 
