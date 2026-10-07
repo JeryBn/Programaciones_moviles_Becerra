@@ -159,3 +159,10 @@ Abrir la carpeta de este proyecto Gradle en Android Studio, sincronizar, selecci
 ```
 
 La segunda comprobación necesita un dispositivo. Consultar `VERIFICACION-EVALUACION.md` en la raíz para los resultados reales de esta preparación. Los APK y reportes se generan en `app/build/`; no se suben como código fuente.
+
+
+## Capturas comprobadas en esta preparación
+
+![lab05-detalle](docs/evidencias/lab05-detalle.png)
+
+Resultados y límites: [verificación conjunta](../../VERIFICACION-EVALUACION.md).
