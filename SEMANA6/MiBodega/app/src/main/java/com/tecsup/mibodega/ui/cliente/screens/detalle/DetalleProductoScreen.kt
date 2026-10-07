@@ -63,7 +63,7 @@ fun DetalleProductoScreen(
             .fillMaxSize()
 
     ) {
-        EncabezadoDetalle(onVolver, favorito, onFavorito)
+        EncabezadoDetalle(favorito, onFavorito)
 
         ImagenProducto()
 
@@ -116,7 +116,7 @@ fun DetalleProductoScreen(
 }
 
 @Composable
-private fun EncabezadoDetalle(onVolver: () -> Unit, favorito: Boolean, onFavorito: () -> Unit) {
+private fun EncabezadoDetalle(favorito: Boolean, onFavorito: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -124,9 +124,6 @@ private fun EncabezadoDetalle(onVolver: () -> Unit, favorito: Boolean, onFavorit
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        IconButton(onClick = onVolver) {
-            Icon(Icons.Default.ArrowBack, contentDescription = "Volver")
-        }
         IconButton(onClick = onFavorito) {
             Icon(if (favorito) Icons.Default.Favorite else Icons.Default.FavoriteBorder, contentDescription = "Favorito", tint = if (favorito) RojoPrecio else MaterialTheme.colorScheme.onSurface)
         }
