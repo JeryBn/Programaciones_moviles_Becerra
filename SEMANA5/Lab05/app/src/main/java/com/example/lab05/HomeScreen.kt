@@ -170,7 +170,7 @@ fun HomeScreen(abrirLista: () -> Unit, abrirPerfil: () -> Unit) {
 
                 // Acción secundaria adicional de perfil
                 OutlinedButton(
-                    onClick = { abrirPerfil() },
+                    onClick = { abrirLista() },
                     shape = RoundedCornerShape(16.dp),
                     modifier = Modifier
                         .fillMaxWidth()
@@ -183,7 +183,7 @@ fun HomeScreen(abrirLista: () -> Unit, abrirPerfil: () -> Unit) {
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = "Ir al perfil (nuevo Botón)",
+                        text = "Abrir Lista",
                         style = MaterialTheme.typography.titleSmall.copy(
                             fontWeight = FontWeight.SemiBold
                         )
