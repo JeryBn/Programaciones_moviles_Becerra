@@ -31,7 +31,7 @@ import com.tecsup.cafecampus.ui.admin.*
  Scaffold(topBar={TopAppBar(title={Text(if(admin) "CafeCampus · Admin" else "CafeCampus · Estudiante")})},bottomBar={NavigationBar {tabs.forEachIndexed {i,(r,t)->NavigationBarItem(selected=ruta==r,onClick={nav.navigate(r) {popUpTo(nav.graph.startDestinationId);launchSingleTop=true}},icon={Icon(when(i) {0->Icons.Default.Home;1->Icons.Default.ReceiptLong;2->Icons.Default.RestaurantMenu;else->Icons.Default.Settings},null)},label={Text(t)})}}}) {padding->
   NavHost(nav,startDestination=if(admin) "panel" else "menu",modifier=Modifier.padding(padding)) {
    composable("menu") {MenuScreen(menu,{nav.navigate("detalle/$it")},{nav.navigate("confirmar")})}
-   composable("pedidos") {MisPedidosScreen(cliente) {nav.navigate("seguimiento/$it")}}
+   composable("pedidos") {MisPedidosScreen(cliente,menu,{nav.navigate("confirmar")}) {nav.navigate("seguimiento/$it")}}
    composable("perfil") {AjustesScreen(sesion)}
    composable("detalle/{id}",arguments=listOf(navArgument("id") {type=NavType.IntType})) {e->DetalleProductoScreen(menu,e.arguments!!.getInt("id")) {nav.popBackStack()}}
    composable("confirmar") {ConfirmarPedidoScreen(menu,cliente,abierto,{nav.popBackStack()},{id->nav.navigate("seguimiento/$id") {popUpTo("menu");launchSingleTop=true}})}

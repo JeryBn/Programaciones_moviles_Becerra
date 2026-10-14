@@ -7,6 +7,8 @@ import com.tecsup.cafecampus.data.prefs.PreferenciasStore
 import com.tecsup.cafecampus.model.*
 class PedidosClienteViewModel(private val repo:CafeRepository,private val clienteId:Int,private val prefs:PreferenciasStore):ViewModel() {
  val misPedidos=repo.observarPedidosCliente(clienteId).stateIn(viewModelScope,SharingStarted.WhileSubscribed(5000),emptyList())
+ val historial=MutableStateFlow(false)
+ val visibles=combine(misPedidos,historial) {lista,h->lista.filter {EstadoPedido.valueOf(it.pedido.estado).activo!=h}}.stateIn(viewModelScope,SharingStarted.WhileSubscribed(5000),emptyList())
  val creado=MutableStateFlow<Long?>(null); val error=MutableStateFlow<String?>(null); val enviando=MutableStateFlow(false)
  fun pedido(id:Int)=repo.observarPedido(id).stateIn(viewModelScope,SharingStarted.WhileSubscribed(5000),null)
  fun confirmar(items:List<ItemCarrito>,horaRecojo:String,pago:String,nota:String) {
