@@ -11,8 +11,10 @@ import com.tecsup.cafecampus.viewmodel.MenuViewModel
 import com.tecsup.cafecampus.ui.components.*
 @Composable fun MenuScreen(vm:MenuViewModel,onProducto:(Int)->Unit,onBolsa:()->Unit) {
  val productos by vm.visibles.collectAsState(); val carrito by vm.carrito.collectAsState(); val categoria by vm.categoria.collectAsState()
+ val busqueda by vm.busqueda.collectAsState()
  Column(Modifier.fillMaxSize().padding(16.dp),verticalArrangement=Arrangement.spacedBy(12.dp)) {
   Text("Menú del campus",style=MaterialTheme.typography.headlineMedium)
+  CafeTextField(busqueda,"Buscar productos") {vm.busqueda.value=it}
   LazyRow(horizontalArrangement=Arrangement.spacedBy(8.dp)) { items(listOf("Todos","Bebidas","Comidas","Snacks")) { c->FilterChip(selected=c==categoria,onClick={vm.categoria.value=c},label={Text(c)}) } }
   LazyVerticalGrid(columns=GridCells.Fixed(2),modifier=Modifier.weight(1f),horizontalArrangement=Arrangement.spacedBy(12.dp),verticalArrangement=Arrangement.spacedBy(12.dp)) { items(productos,key={it.id}) { p->ProductoCard(p) { onProducto(p.id) } } }
   if(productos.isEmpty()) Text("No hay productos en esta categoría")
