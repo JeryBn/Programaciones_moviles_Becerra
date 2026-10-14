@@ -3,6 +3,7 @@ import androidx.room.*
 import kotlinx.coroutines.flow.Flow
 import com.tecsup.cafecampus.data.local.entity.*
 import com.tecsup.cafecampus.data.local.relation.PedidoConDetalle
+import com.tecsup.cafecampus.model.PedidosPorHora
 @Dao abstract class PedidoDao {
  @Insert abstract suspend fun insertarPedido(p:Pedido):Long
  @Insert abstract suspend fun insertarDetalles(d:List<DetallePedido>)
@@ -19,5 +20,7 @@ import com.tecsup.cafecampus.data.local.relation.PedidoConDetalle
  @Query("SELECT COALESCE(SUM(total),0.0) FROM pedidos WHERE fecha>=:inicio AND estado!='CANCELADO'")
  abstract fun ventasDesde(inicio:Long):Flow<Double>
  @Query("SELECT COUNT(*) FROM pedidos WHERE estado=:estado") abstract fun cantidadPorEstado(estado:String):Flow<Int>
+ @Query("SELECT CAST(strftime('%H', fecha/1000, 'unixepoch', 'localtime') AS INTEGER) AS hora, COUNT(*) AS cantidad FROM pedidos WHERE fecha>=:inicio AND fecha<:fin AND estado!='CANCELADO' GROUP BY hora ORDER BY hora")
+ abstract fun pedidosPorHora(inicio:Long,fin:Long):Flow<List<PedidosPorHora>>
 }
 

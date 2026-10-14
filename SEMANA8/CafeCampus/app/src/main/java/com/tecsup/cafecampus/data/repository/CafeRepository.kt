@@ -17,5 +17,6 @@ interface CafeRepository {
  suspend fun cambiarEstado(pedidoId:Int,estado:EstadoPedido)
  fun observarVentasHoy(inicioDia:Long):Flow<Double>
  fun observarCantidadPorEstado(estado:EstadoPedido):Flow<Int>
+ fun observarPedidosPorHora(inicio:Long,fin:Long):Flow<List<PedidosPorHora>>
 }
 
