@@ -20,6 +20,8 @@ class FlujoUiTest {
   rule.onNodeWithText("Ingresar").performClick();esperar("Correo o contraseña incorrectos");captura("login-error")
   rule.onAllNodes(hasSetTextAction())[1].performTextClearance();rule.onAllNodes(hasSetTextAction())[1].performTextInput("1234")
   rule.onNodeWithText("Ingresar").performClick();esperar("Menú del campus");captura("cliente-menu")
+  rule.onNodeWithText("Buscar productos").performTextInput("CAFE");rule.waitUntil(5000) {rule.onAllNodesWithText("Chicha morada").fetchSemanticsNodes().isEmpty()};rule.onNodeWithText("Café americano").assertExists();captura("cliente-busqueda")
+  rule.onNodeWithText("Buscar productos").performTextClearance()
   rule.onNodeWithText("Café americano").performScrollTo().performClick();esperar("Nota para este producto");captura("cliente-detalle")
   rule.onNodeWithText("Agregar al pedido",substring=true).performClick()
   esperar("Menú del campus");rule.onNodeWithText("Chicha morada").performScrollTo().performClick();rule.onNodeWithText("Agregar al pedido",substring=true).performClick()
@@ -30,7 +32,7 @@ class FlujoUiTest {
   esperar("Panel de cafetería");captura("admin-panel")
   rule.onAllNodesWithText("Preparar pedido",substring=true)[0].performScrollTo().performClick()
   rule.onNodeWithText("Pedidos",useUnmergedTree=false).performClick();esperar("Gestión de pedidos")
-  rule.onNodeWithText("PREPARANDO").performClick();captura("admin-pedidos")
+  rule.onNode(hasText("PREPARANDO") and SemanticsMatcher.keyIsDefined(androidx.compose.ui.semantics.SemanticsProperties.Selected)).performClick();captura("admin-pedidos")
   rule.onNodeWithText("Menú").performClick();esperar("Gestión del menú");captura("admin-menu")
   rule.onNodeWithText("Ajustes").performClick();esperar("Ajustes y perfil");captura("admin-ajustes")
   if(rule.onAllNodes(isToggleable())[0].fetchSemanticsNode().config[androidx.compose.ui.semantics.SemanticsProperties.ToggleableState]!=androidx.compose.ui.state.ToggleableState.On) rule.onAllNodes(isToggleable())[0].performClick()
@@ -45,6 +47,15 @@ class FlujoUiTest {
   rule.onNodeWithText("Cambiar de perfil · modo práctica").performClick();esperar("Menú del campus")
   rule.onNodeWithText("Pedidos").performClick();esperar("Mis pedidos");rule.onAllNodesWithText("PREPARANDO")[0].assertExists();captura("cliente-pedido-preparando")
   rule.activityRule.scenario.recreate();esperar("Mis pedidos");rule.onAllNodesWithText("PREPARANDO")[0].assertExists()
+  rule.onNodeWithText("Perfil").performClick();esperar("Ajustes y perfil");rule.onNodeWithText("Cambiar de perfil · modo práctica").performClick();esperar("Panel de cafetería")
+  rule.onNodeWithText("Pedidos").performClick();esperar("Gestión de pedidos");rule.onNode(hasText("PREPARANDO") and SemanticsMatcher.keyIsDefined(androidx.compose.ui.semantics.SemanticsProperties.Selected)).performClick()
+  rule.waitUntil(5000) {rule.onAllNodesWithText("Pedido #",substring=true).fetchSemanticsNodes().isNotEmpty()}
+  rule.onAllNodesWithText("Pedido #",substring=true)[0].performClick();esperar("Pasar a LISTO");rule.onNodeWithText("Pasar a LISTO").performClick()
+  esperar("Pasar a ENTREGADO");rule.onNodeWithText("Pasar a ENTREGADO").performClick();esperar("ENTREGADO");captura("admin-entregado")
+  rule.onNodeWithText("Ajustes").performClick();esperar("Ajustes y perfil");rule.onNodeWithText("Cambiar de perfil · modo práctica").performClick();esperar("Menú del campus")
+  rule.onNodeWithText("Pedidos").performClick();esperar("Mis pedidos");rule.onNodeWithText("Historial").performClick()
+  rule.waitUntil(5000) {rule.onAllNodesWithText("Repetir pedido #",substring=true).fetchSemanticsNodes().isNotEmpty()}
+  rule.onAllNodesWithText("Repetir pedido #",substring=true)[0].performClick();esperar("Confirmar pedido");rule.onNodeWithText("Subtotal / Total: S/ 7.50").assertExists();captura("cliente-repetir")
  }
 }
 

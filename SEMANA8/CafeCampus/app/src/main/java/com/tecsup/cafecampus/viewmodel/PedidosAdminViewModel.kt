@@ -12,5 +12,13 @@ class PedidosAdminViewModel(private val repo:CafeRepository):ViewModel() {
  fun pedido(id:Int)=repo.observarPedido(id).stateIn(viewModelScope,SharingStarted.WhileSubscribed(5000),null)
  fun avanzar(p:PedidoConDetalle) { EstadoPedido.valueOf(p.pedido.estado).siguiente()?.let { e->viewModelScope.launch {repo.cambiarEstado(p.pedido.id,e)} } }
  fun cancelar(p:PedidoConDetalle) { if(EstadoPedido.valueOf(p.pedido.estado).activo) viewModelScope.launch {repo.cambiarEstado(p.pedido.id,EstadoPedido.CANCELADO)} }
+ val error=MutableStateFlow<String?>(null)
+ fun seleccionar(p:PedidoConDetalle,e:EstadoPedido) {
+  val actual=EstadoPedido.valueOf(p.pedido.estado)
+  if(e==actual) return
+  if(e==actual.siguiente()) {error.value=null;avanzar(p)}
+  else if(e==EstadoPedido.CANCELADO&&actual.activo) {error.value=null;cancelar(p)}
+  else error.value="Avanza en orden: Recibido → Preparando → Listo → Entregado"
+ }
 }
 
