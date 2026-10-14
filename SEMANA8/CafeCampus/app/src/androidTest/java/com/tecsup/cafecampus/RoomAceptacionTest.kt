@@ -38,5 +38,13 @@ class RoomAceptacionTest {
   val u=repo.login("juan@campus.test","1234")!!;val p=repo.observarProductos().first().first();repo.cambiarDisponibilidad(p.id,false)
   try {repo.crearPedido(u.id,listOf(ItemCarrito(p,1)),"Ahora","CAJA","");fail("Debía rechazar agotado")}catch(e:IllegalArgumentException) {assertTrue(repo.observarPedidosCliente(u.id).first().isEmpty())}
  }
+ @Test fun graficoSeCalculaConRoom()=runBlocking {
+  val u=repo.login("juan@campus.test","1234")!!;val p=repo.observarProductos().first().first()
+  val id=repo.crearPedido(u.id,listOf(ItemCarrito(p,1)),"Ahora","CAJA","").toInt()
+  val grafico=repo.observarPedidosPorHora(0,Long.MAX_VALUE).first()
+  assertEquals(1,grafico.sumOf {it.cantidad})
+  repo.cambiarEstado(id,EstadoPedido.CANCELADO)
+  assertTrue(repo.observarPedidosPorHora(0,Long.MAX_VALUE).first().isEmpty())
+ }
 }
 

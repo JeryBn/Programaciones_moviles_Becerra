@@ -18,7 +18,7 @@ import com.tecsup.cafecampus.ui.components.*
   Row { FilterChip(selected=!historial,onClick={vm.historial.value=false},label={Text("Activos")}); Spacer(Modifier.width(8.dp)); FilterChip(selected=historial,onClick={vm.historial.value=true},label={Text("Historial")}) }
   aviso?.let {Text(it)}
   if(visibles.isEmpty()) Text("No hay pedidos en esta sección")
-  LazyColumn(verticalArrangement=Arrangement.spacedBy(12.dp)) {items(visibles,key={it.pedido.id}) {p->Column {PedidoCard(p) {onPedido(p.pedido.id)};if(historial) CafeButton("Repetir pedido #${p.pedido.id}") {if(menu.repetir(p)) onRepetir()} }}}
+  LazyColumn(verticalArrangement=Arrangement.spacedBy(12.dp)) {items(visibles,key={it.pedido.id}) {p->Column {PedidoCard(p) {onPedido(p.pedido.id)};if(historial) CafeButton("Repetir pedido #${p.pedido.id}") {menu.repetir(p,onRepetir)} }}}
  }
 }
 
