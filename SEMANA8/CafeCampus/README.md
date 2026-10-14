@@ -106,6 +106,12 @@ Tres vistas de administrador:
 Cambio compartido por Flow:
 ![Pedido preparando observado por estudiante](docs/evidencias/cliente-pedido-preparando.png)
 
+Evidencias adicionales:
+![Pedido entregado](docs/evidencias/admin-entregado.png)
+![Repetir pedido en modo oscuro](docs/evidencias/cliente-repetir.png)
+![Recepción cerrada](docs/evidencias/cliente-cerrada.png)
+![Reinicio completo del proceso](docs/evidencias/reinicio-proceso.png)
+
 ## Para pensar — respuestas propuestas para revisar con palabras propias
 El Repository es una interface para intercambiar la fuente de datos sin cambiar los ViewModels.
 crearPedido es suspend porque realiza una escritura única; observarPedidosCliente es Flow porque emite cambios.
