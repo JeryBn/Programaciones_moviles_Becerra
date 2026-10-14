@@ -15,7 +15,7 @@ import androidx.compose.ui.geometry.Offset
  val horas by vm.porHora.collectAsState();val color=MaterialTheme.colorScheme.primary
  LazyColumn(Modifier.fillMaxSize().padding(16.dp),verticalArrangement=Arrangement.spacedBy(12.dp)) {
   item {Text("Panel de cafetería",style=MaterialTheme.typography.headlineMedium)}
-  item {Row(horizontalArrangement=Arrangement.spacedBy(8.dp)) {listOf("Nuevos" to nuevos,"Preparando" to preparando,"Listos" to listos).forEach { (t,n)->Card(Modifier.weight(1f)) {Column(Modifier.padding(12.dp)) {Text("$n",style=MaterialTheme.typography.headlineSmall);Text(t)}} } }}
+  item {Row(horizontalArrangement=Arrangement.spacedBy(8.dp)) {listOf("Nuevos" to nuevos,"Preparando" to preparando,"Listos" to listos).forEach { (t,n)->Card(Modifier.weight(1f)) {Column(Modifier.padding(12.dp)) {Text("$n",style=MaterialTheme.typography.headlineSmall);EstadoChip(when(t) {"Nuevos"->"RECIBIDO";"Preparando"->"PREPARANDO";else->"LISTO"})}} } }}
   item {Text("Ventas del día · S/ %.2f".format(ventas),style=MaterialTheme.typography.titleLarge)}
   item {Text("Pedidos por hora · datos reales de Room")}
   item {if(horas.isEmpty()) Text("Aún no hay pedidos hoy") else Column {

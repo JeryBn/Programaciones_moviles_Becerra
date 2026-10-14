@@ -7,7 +7,16 @@ import com.tecsup.cafecampus.model.Rol
  val admin=rol==Rol.ADMIN
  val primary=Color(if(admin) 0xFF4F46E5 else 0xFFEA580C)
  val scheme=if(oscuro) darkColorScheme(primary=Color(if(admin) 0xFFC7D2FE else 0xFFFDBA74))
- else lightColorScheme(primary=primary,primaryContainer=Color(if(admin) 0xFFE0E7FF else 0xFFFFEDD5),background=Color(if(admin) 0xFFF7F7FD else 0xFFFFFBF7))
+ else lightColorScheme(
+  primary=primary,secondary=primary,tertiary=primary,
+  primaryContainer=Color(if(admin) 0xFFE0E7FF else 0xFFFFEDD5),
+  secondaryContainer=Color(if(admin) 0xFFE0E7FF else 0xFFFFEDD5),
+  background=Color(if(admin) 0xFFF7F7FD else 0xFFFFFBF7),
+  surface=Color(if(admin) 0xFFF7F7FD else 0xFFFFFBF7),
+  surfaceVariant=Color(if(admin) 0xFFE0E7FF else 0xFFFFEDD5),
+  onPrimaryContainer=Color(if(admin) 0xFF312E81 else 0xFF7C2D12),
+  onSecondaryContainer=Color(if(admin) 0xFF312E81 else 0xFF7C2D12)
+ )
  MaterialTheme(colorScheme=scheme,content=content)
 }
 
