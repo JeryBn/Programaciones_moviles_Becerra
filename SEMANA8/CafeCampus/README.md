@@ -60,6 +60,38 @@ Los pasos están explicados en ../INDICACIONES-FASE-MANUAL.md. Ese archivo corre
 - Cambio de perfil en modo práctica y cierre de sesión.
 - Modo oscuro y recepción de pedidos guardados con DataStore.
 
+## Mejoras de la rama mejora-ia
+1. Búsqueda de productos: combina texto y categoría en el ViewModel, tolerando tildes y mayúsculas.
+2. Repetir pedido: lee productos actuales, usa sus precios y rechaza repetir si alguno fue eliminado o agotado.
+3. Gráfico de pedidos por hora: consulta Room para el día actual, sin cancelados, y presenta barras y cantidades.
+
+## Valor agregado Mi recreo
+El estudiante selecciona 5, 10, 15 o 20 minutos. El ViewModel combina contadores reales de pedidos recibidos y preparando con la preferencia de recepción de pedidos.
+El algoritmo estima el tiempo con dos estaciones hipotéticas: 4 minutos por recibido, 2 por preparando y 4 para el nuevo pedido. Si la carga supera el tiempo disponible, aconseja otra hora de recojo.
+La pantalla aclara que no garantiza la entrega. Es una adaptación diseñada para este laboratorio; no se afirma exclusividad mundial.
+Archivo de reglas: model/PlanRecreo.kt. Conexión reactiva: MiRecreoViewModel.kt. Interfaz: MiRecreoScreen.kt.
+Cinco pruebas unitarias cubren cola vacía, cola larga, límite exacto, cerrado y datos inválidos.
+
+## Cómo demostrarlo al docente
+1. Entrar con la cuenta de estudiante, elegir Café americano y Chicha morada y confirmar S/ 7.50.
+2. Mostrar el seguimiento Recibido.
+3. Abrir Perfil > Cambiar de perfil; el panel muestra el mismo pedido.
+4. Preparar, dejar listo y entregar; volver al cliente y abrir Historial.
+5. Repetir el pedido: carga la bolsa sin crear todavía un nuevo pedido.
+6. En Menú escribir CAFE y comprobar que aparece Café americano.
+7. Mostrar el gráfico real del panel y Mi recreo con dos tiempos diferentes.
+8. En Ajustes apagar Recibir pedidos y demostrar confirmación deshabilitada.
+9. Activar modo oscuro, cerrar la app y reabrir; comprobar perfil y tema.
+10. Mostrar git log y PROMPTS.md para explicar avances y asistencia.
+
+## Qué explicar del código
+Producto, Usuario, Pedido y DetallePedido representan las cuatro tablas. Los índices facilitan las relaciones; CASCADE elimina líneas junto a su pedido.
+PedidoConDetalle reúne cabecera, usuario y líneas. La transacción impide guardar un pedido incompleto.
+Repository es el contrato de datos. CafeRepositoryRoom usa los DAOs; las pantallas no los conocen.
+MenuViewModel conserva carrito y filtro. Los ViewModels de pedidos observan Flow; el administrador cambia Room y el estudiante recibe la actualización.
+DataStore conserva perfil, tema y recepción. El precio histórico del detalle no se recalcula con el catálogo.
+Mi recreo es un modelo de estimación con supuestos documentados, no un sistema de reserva de turnos.
+
 ## Capturas reales
 Tres vistas de estudiante:
 ![Catálogo estudiante](docs/evidencias/cliente-menu.png)

@@ -1,5 +1,7 @@
 # Laboratorio 8 CafeCampus — instrucciones de trabajo personal
 
+**Actualización del alcance:** estas instrucciones se publicaron cuando el estudiante quería elaborar personalmente la Fase 1. Posteriormente pidió construir el proyecto completo desde cero con ChatGPT. La implementación actual está en CafeCampus/, y su README y ORIGEN-Y-ASISTENCIA.md declaran esa asistencia. Los párrafos siguientes describen el plan personal original, no el estado actual de entrega.
+
 ## Alcance y autoría
 
 La Fase 1 de la guía exige trabajo sin IA. Este documento es una lista de ubicación, contratos y verificaciones extraída de la guía; no contiene la solución Kotlin. El estudiante debe escribir personalmente el código de esa fase. La Fase 2 se realizará con ChatGPT en lugar de Gemini, por solicitud del estudiante, y se registrará esa sustitución honestamente. Consultar al docente si acepta el cambio de herramienta.
