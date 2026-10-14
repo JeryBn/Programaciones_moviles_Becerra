@@ -9,6 +9,7 @@ import androidx.navigation.navArgument
 fun Navegacion(
     reservas: List<Reserva>,
     registrar: (Int, String) -> Int?,
+    cancelar: (Int) -> Unit,
     usarScaffold: Boolean,
     usarLazyColumn: Boolean,
     usarLazyRow: Boolean
@@ -40,7 +41,7 @@ fun Navegacion(
     ) {
         NavHost(navController = nav, startDestination = "inicio") {
             composable("inicio") { Inicio({ nav.navigate("detalle/$it") }, usarLazyColumn, usarLazyRow) }
-            composable("reservas") { Reservas(reservas) }
+            composable("reservas") { Reservas(reservas, cancelar) }
             composable("rutinas") { Rutinas() }
             composable("perfil") { Perfil(reservas) }
             composable("detalle/{claseId}", arguments = listOf(navArgument("claseId") { type = NavType.IntType })) { entry ->

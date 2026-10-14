@@ -54,6 +54,13 @@ fun PantallaRegistro(modifier: Modifier = Modifier) {
     var precio by remember { mutableStateOf("") }
     var cantidad by remember { mutableStateOf("") }
     var mostrarResumen by remember { mutableStateOf(false) }
+    var mensajeError by remember { mutableStateOf<String?>(null) }
+
+    // Un cambio en los campos requiere volver a validar antes de mostrar la Card.
+    fun ocultarResultado() {
+        mostrarResumen = false
+        mensajeError = null
+    }
 
     Column(
         modifier = modifier
@@ -80,7 +87,10 @@ fun PantallaRegistro(modifier: Modifier = Modifier) {
         // REGLA 4: Campo largo a ancho completo
         OutlinedTextField(
             value = nombre,
-            onValueChange = { nombre = it },
+            onValueChange = {
+                nombre = it
+                ocultarResultado()
+            },
             label = { Text("Nombre del producto") },
             modifier = Modifier.fillMaxWidth()
         )
@@ -94,7 +104,10 @@ fun PantallaRegistro(modifier: Modifier = Modifier) {
 
             OutlinedTextField(
                 value = precio,
-                onValueChange = { precio = it },
+                onValueChange = {
+                    precio = it
+                    ocultarResultado()
+                },
                 label = { Text("Precio (S/)") },
                 modifier = Modifier.weight(1f)
             )
@@ -103,7 +116,10 @@ fun PantallaRegistro(modifier: Modifier = Modifier) {
 
             OutlinedTextField(
                 value = cantidad,
-                onValueChange = { cantidad = it },
+                onValueChange = {
+                    cantidad = it
+                    ocultarResultado()
+                },
                 label = { Text("Cantidad") },
                 modifier = Modifier.weight(1f)
             )
@@ -114,7 +130,20 @@ fun PantallaRegistro(modifier: Modifier = Modifier) {
         // REGLA 3: Color principal del tema
         Button(
             onClick = {
-                mostrarResumen = true
+                val precioNum = precio.trim().toDoubleOrNull()
+                val cantidadNum = cantidad.trim().toIntOrNull()
+                mensajeError = when {
+                    nombre.isBlank() || precio.isBlank() || cantidad.isBlank() ->
+                        "Completa nombre, precio y cantidad."
+                    precioNum == null || !precioNum.isFinite() || precioNum <= 0.0 ->
+                        "Ingresa un precio válido mayor que cero (ejemplo: 12.50)."
+                    cantidadNum == null || cantidadNum <= 0 ->
+                        "Ingresa una cantidad entera mayor que cero."
+                    !(precioNum * cantidadNum).isFinite() ->
+                        "El importe es demasiado grande. Reduce el precio o la cantidad."
+                    else -> null
+                }
+                mostrarResumen = mensajeError == null
             },
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -123,10 +152,33 @@ fun PantallaRegistro(modifier: Modifier = Modifier) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        Button(
+            onClick = {
+                nombre = ""
+                precio = ""
+                cantidad = ""
+                ocultarResultado()
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Limpiar")
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        mensajeError?.let { error ->
+            Text(
+                text = error,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodyMedium
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+
         if (mostrarResumen) {
 
-            val precioNum = precio.toDoubleOrNull() ?: 0.0
-            val cantidadNum = cantidad.toIntOrNull() ?: 0
+            val precioNum = precio.trim().toDoubleOrNull() ?: 0.0
+            val cantidadNum = cantidad.trim().toIntOrNull() ?: 0
             val importe = precioNum * cantidadNum
 
             Card(
@@ -140,7 +192,7 @@ fun PantallaRegistro(modifier: Modifier = Modifier) {
                 ) {
 
                     Text(
-                        text = nombre,
+                        text = nombre.trim(),
                         style = MaterialTheme.typography.titleLarge
                     )
 

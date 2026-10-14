@@ -70,7 +70,20 @@ fun Confirmacion(reserva: Reserva?, verReservas: () -> Unit, irInicio: () -> Uni
 }
 
 @Composable
-fun Reservas(reservas: List<Reserva>) {
+fun Reservas(reservas: List<Reserva>, cancelar: (Int) -> Unit) {
+    var pendiente by rememberSaveable { mutableStateOf<Int?>(null) }
+    val reservaPendiente = reservas.find { it.id == pendiente && it.estado == EstadoReserva.CONFIRMADA }
+    if (reservaPendiente != null) {
+        AlertDialog(
+            onDismissRequest = { pendiente = null },
+            title = { Text("¿Cancelar reserva?") },
+            text = { Text("${clases.first { it.id == reservaPendiente.claseId }.nombre}\n${reservaPendiente.horario}\nEl horario quedará disponible para reservar de nuevo.") },
+            confirmButton = {
+                TextButton(onClick = { cancelar(reservaPendiente.id); pendiente = null }) { Text("Sí, cancelar") }
+            },
+            dismissButton = { TextButton(onClick = { pendiente = null }) { Text("Mantener reserva") } }
+        )
+    }
     if (reservas.isEmpty()) {
         Pagina { Text("Aún no tienes reservas. Elige una clase en Inicio.") }
     } else {
@@ -85,6 +98,9 @@ fun Reservas(reservas: List<Reserva>) {
                         EstadoReserva.CANCELADA -> MaterialTheme.colorScheme.error
                     }
                     Text(reserva.estado.name.lowercase().replaceFirstChar { it.uppercase() }, color = color)
+                    if (reserva.estado == EstadoReserva.CONFIRMADA) {
+                        OutlinedButton(onClick = { pendiente = reserva.id }) { Text("Cancelar reserva") }
+                    }
                 }
             }
         }

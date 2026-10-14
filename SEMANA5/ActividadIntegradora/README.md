@@ -2,6 +2,8 @@
 
 Aplicación Android de reserva de clases, desarrollada con Kotlin, Jetpack Compose y Material 3. Usa estado local con `mutableStateOf` y `rememberSaveable`, sin ViewModel, MVVM, servidor ni base de datos.
 
+![Inicio real de TECSUP Fit](docs/evidencias/inicio.png)
+
 > **Autoría y alcance:** esta base se desarrolló desde cero con asistencia de IA autorizada y registrada en [PROMPTS.md](PROMPTS.md). No se presenta como fase realizada sin IA. Los commits corresponden a cambios reales de esta sesión y mantienen sus fechas reales. La exigencia de trabajo sin IA y distribución en varios días de la guía no queda acreditada por este desarrollo.
 
 ## Cuatro requerimientos funcionales
@@ -43,6 +45,18 @@ El segundo comando requiere un emulador o teléfono conectado. El APK se genera 
 7. **Volver:** en pantallas secundarias la flecha llama a `popBackStack()`. Tras confirmar se retira el formulario de la pila para evitar reenviarlo al volver.
 
 Los horarios Hoy / Mañana son datos didácticos, no un calendario real. Las reservas sobreviven a la recreación de la Activity mediante `rememberSaveable`; no tienen persistencia permanente tras una nueva sesión. Se incluye una reserva completada de ejemplo para mostrar los dos estados y las estadísticas. No se implementa gestión real de aforo multiusuario.
+
+### Mejora de RF-03 en esta rama: cancelar una reserva
+
+1. Registrar una reserva y abrir Reservas.
+2. Pulsar **Cancelar reserva**. Todavía no cambia el estado: se guarda el ID pendiente y se abre un `AlertDialog`.
+3. Pulsar **Mantener reserva**, tocar fuera del diálogo o volver atrás para descartar la solicitud sin modificar la reserva.
+4. Pulsar **Sí, cancelar** para cambiar únicamente una reserva Confirmada a Cancelada.
+5. La reserva permanece en el historial; el horario queda disponible para reservar otra vez. El contador de reservas confirmadas del Perfil se actualiza.
+
+Una reserva Completada o Cancelada no muestra el botón. `cancelarReserva` también valida el estado antes de cambiarlo: la regla no depende solamente de esconder un botón.
+
+**Cómo retirar la mejora sin romper la base:** en `Reservas`, retirar el estado `pendiente`, el bloque AlertDialog y el botón de cancelar. Después retirar el callback `cancelar` de `Reservas`, `Navegacion` y sus llamadas desde `FitApp`. La lista, los estados originales y la navegación siguen independientes. Retirar las pruebas específicas de cancelación solo si se elimina esa función de forma intencional.
 
 ## Mapa de archivos: qué modificar
 
@@ -157,7 +171,7 @@ Son ejercicios probables por los temas indicados, no preguntas confirmadas.
 
 ## Git y evidencia de desarrollo
 
-`main` contiene la base asistida. `mejora-ia` se deriva de ella y añade cancelación con AlertDialog dentro de RF-03. El historial documenta organización, configuración, datos, interfaz, pantallas, navegación, pruebas y documentación, no simula trabajo sin IA ni fechas anteriores.
+`main` contiene la base asistida. `mejora-ia` se deriva de ella y añade cancelación con AlertDialog dentro de RF-03. Como ya existía una rama remota con mejoras de la semana 3, se integró su historial y se conservó su proyecto antes de agregar las mejoras de semana 5. El historial documenta organización, configuración, datos, interfaz, pantallas, navegación, pruebas y documentación, no simula trabajo sin IA ni fechas anteriores.
 
 Para tus prácticas, crear una rama propia y realizar commits después de cada cambio entendido y comprobado:
 

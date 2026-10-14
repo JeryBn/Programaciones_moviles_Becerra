@@ -38,3 +38,10 @@ fun puedeReservar(reservas: List<Reserva>, claseId: Int, horario: String): Boole
 
 // Una reserva completada permite demostrar estados diferentes desde el primer inicio.
 fun reservasIniciales() = listOf(Reserva(1, 1, "Sesión anterior · 08:00", EstadoReserva.COMPLETADA))
+
+// Solo una reserva confirmada se puede cancelar. No se elimina el historial.
+fun cancelarReserva(reservas: List<Reserva>, reservaId: Int): List<Reserva> = reservas.map {
+    if (it.id == reservaId && it.estado == EstadoReserva.CONFIRMADA)
+        it.copy(estado = EstadoReserva.CANCELADA)
+    else it
+}
