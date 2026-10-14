@@ -27,7 +27,16 @@ class MainActivity:ComponentActivity() {
     CafeTheme(if(usuario?.rol=="ADMIN") Rol.ADMIN else Rol.CLIENTE,oscuro) {
      val background=MaterialTheme.colorScheme.background
      SideEffect {window.statusBarColor=background.toArgb();WindowCompat.getInsetsController(window,window.decorView).isAppearanceLightStatusBars=!oscuro}
-     if(!listo) SplashScreen() else if(usuario==null) LoginScreen(sesion) else NavCafe(repo,prefs,sesion)
+     if(!listo) SplashScreen() else if(usuario==null) LoginScreen(sesion) else {
+      val id=usuario!!.id
+      val menu:MenuViewModel=viewModel(key="menu-$id",factory=CafeViewModelFactory {MenuViewModel(repo)})
+      val cliente:PedidosClienteViewModel=viewModel(key="cliente-$id",factory=CafeViewModelFactory {PedidosClienteViewModel(repo,id,prefs)})
+      val panel:PanelAdminViewModel=viewModel(factory=CafeViewModelFactory {PanelAdminViewModel(repo)})
+      val pedidos:PedidosAdminViewModel=viewModel(factory=CafeViewModelFactory {PedidosAdminViewModel(repo)})
+      val adminMenu:MenuAdminViewModel=viewModel(factory=CafeViewModelFactory {MenuAdminViewModel(repo)})
+      val recreo:MiRecreoViewModel=viewModel(factory=CafeViewModelFactory {MiRecreoViewModel(repo,prefs)})
+      NavCafe(sesion,menu,cliente,panel,pedidos,adminMenu,recreo)
+     }
     }
    }
   }

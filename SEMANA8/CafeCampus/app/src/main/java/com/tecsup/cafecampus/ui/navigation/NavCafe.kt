@@ -5,27 +5,18 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import androidx.navigation.compose.*
 import com.tecsup.cafecampus.viewmodel.*
-import com.tecsup.cafecampus.data.repository.CafeRepository
-import com.tecsup.cafecampus.data.prefs.PreferenciasStore
 import com.tecsup.cafecampus.ui.cliente.*
 import com.tecsup.cafecampus.ui.admin.*
 @OptIn(ExperimentalMaterial3Api::class)
-@Composable fun NavCafe(repo:CafeRepository,prefs:PreferenciasStore,sesion:SesionViewModel) {
+@Composable fun NavCafe(sesion:SesionViewModel,menu:MenuViewModel,cliente:PedidosClienteViewModel,panel:PanelAdminViewModel,pedidos:PedidosAdminViewModel,adminMenu:MenuAdminViewModel,recreo:MiRecreoViewModel) {
  val usuario by sesion.usuarioActual.collectAsState(); val u=usuario?:return;val admin=u.rol=="ADMIN"
  // Perfil cambia la identidad del grafo y limpia su back stack. Menú sobrevive rotación.
  key(u.id) {
  val nav=rememberNavController()
- val menu:MenuViewModel=viewModel(key="menu-${u.id}",factory=CafeViewModelFactory {MenuViewModel(repo)})
- val cliente:PedidosClienteViewModel=viewModel(key="cliente-${u.id}",factory=CafeViewModelFactory {PedidosClienteViewModel(repo,u.id,prefs)})
- val panel:PanelAdminViewModel=viewModel(factory=CafeViewModelFactory {PanelAdminViewModel(repo)})
- val pedidos:PedidosAdminViewModel=viewModel(factory=CafeViewModelFactory {PedidosAdminViewModel(repo)})
- val adminMenu:MenuAdminViewModel=viewModel(factory=CafeViewModelFactory {MenuAdminViewModel(repo)})
- val recreo:MiRecreoViewModel=viewModel(factory=CafeViewModelFactory {MiRecreoViewModel(repo,prefs)})
  val abierto by sesion.recibirPedidos.collectAsState()
  val entry by nav.currentBackStackEntryAsState();val ruta=entry?.destination?.route
  val tabs=if(admin) listOf("panel" to "Panel","admin_pedidos" to "Pedidos","admin_menu" to "Menú","ajustes" to "Ajustes") else listOf("menu" to "Menú","pedidos" to "Pedidos","perfil" to "Perfil")

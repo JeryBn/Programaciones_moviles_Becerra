@@ -10,9 +10,10 @@ class FlujoUiTest {
  private fun esperar(texto:String) {rule.waitUntil(15000) {rule.onAllNodesWithText(texto).fetchSemanticsNodes().isNotEmpty()}}
  private fun captura(nombre:String) {rule.waitForIdle();Thread.sleep(400);val context=InstrumentationRegistry.getInstrumentation().targetContext;val dir=File(context.getExternalFilesDir(null),"evidencias");dir.mkdirs();InstrumentationRegistry.getInstrumentation().uiAutomation.takeScreenshot().let {b->File(dir,"$nombre.png").outputStream().use {b.compress(Bitmap.CompressFormat.PNG,100,it)}}}
  @Test fun compraAdminSeguimientoRotacionYPersistencia() {
-  rule.waitUntil(15000) {rule.onAllNodesWithText("Ingresar").fetchSemanticsNodes().isNotEmpty() || rule.onAllNodesWithText("Menú del campus").fetchSemanticsNodes().isNotEmpty()}
+  rule.waitUntil(15000) {rule.onAllNodesWithText("Ingresar").fetchSemanticsNodes().isNotEmpty() || rule.onAllNodesWithText("Menú del campus").fetchSemanticsNodes().isNotEmpty() || rule.onAllNodesWithText("Panel de cafetería").fetchSemanticsNodes().isNotEmpty()}
   if(rule.onAllNodesWithText("Ingresar").fetchSemanticsNodes().isEmpty()) {
-   rule.onNodeWithText("Perfil").performClick();esperar("Ajustes y perfil");rule.onNodeWithText("Cerrar sesión").performClick()
+   if(rule.onAllNodesWithText("Panel de cafetería").fetchSemanticsNodes().isNotEmpty()) rule.onNodeWithText("Ajustes").performClick() else rule.onNodeWithText("Perfil").performClick()
+   esperar("Ajustes y perfil");rule.onNodeWithText("Cerrar sesión").performClick()
   }
   esperar("Ingresar")
   rule.onAllNodes(hasSetTextAction())[0].performTextInput("juan@campus.test")
