@@ -36,6 +36,21 @@ class FlujoUiTest {
   rule.onNodeWithText("Cambiar de perfil · modo práctica").performClick();esperar("Menú del campus")
   rule.onNodeWithText("Pedidos").performClick();esperar("Mis pedidos");rule.onAllNodesWithText("PREPARANDO")[0].assertExists();captura("cliente-pedido-preparando")
   rule.activityRule.scenario.recreate();esperar("Mis pedidos");rule.onAllNodesWithText("PREPARANDO")[0].assertExists()
+  rule.onNodeWithText("Perfil").performClick();esperar("Ajustes y perfil")
+  rule.onNodeWithContentDescription("Activar modo oscuro").performClick();rule.waitForIdle()
+  captura("cliente-modo-oscuro")
+  rule.activityRule.scenario.recreate();esperar("Ajustes y perfil")
+  rule.onNodeWithContentDescription("Activar modo oscuro").assertIsOn()
+  rule.onNodeWithText("Cambiar de perfil · modo práctica").performClick();esperar("Panel de cafetería")
+  rule.onNodeWithText("Ajustes").performClick();esperar("Ajustes y perfil")
+  rule.onNodeWithContentDescription("Recibir pedidos de clientes").performClick();rule.waitForIdle();captura("admin-cafeteria-cerrada")
+  rule.onNodeWithText("Cambiar de perfil · modo práctica").performClick();esperar("Menú del campus")
+  rule.onNodeWithText("Café americano").performClick();esperar("Nota para este producto")
+  rule.onNodeWithText("Agregar al pedido",substring=true).performClick();esperar("Menú del campus")
+  rule.onNodeWithText("Mi bolsa (1)",substring=true).performClick();esperar("Confirmar pedido")
+  rule.onNodeWithText("Cafetería cerrada").assertExists()
+  rule.onNode(hasText("Confirmar pedido") and hasClickAction()).assertIsNotEnabled();captura("cliente-cafeteria-cerrada")
+
  }
 }
 

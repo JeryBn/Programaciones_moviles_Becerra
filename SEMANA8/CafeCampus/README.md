@@ -101,3 +101,8 @@ git push origin mejora-ia
 ```
 No se fabricaron commits vacíos. PROMPTS.md registra solicitudes y correcciones reales; no declara participación de Gemini.
 
+
+## Guía completada y revisión del 23 de octubre
+
+La guía original completada con evidencias, código en capturas, pruebas de aceptación marcadas y cinco conclusiones está en ../GLAB-S08-JLEONS-2026-1.pdf.
+Se ampliaron las pruebas de preferencias, recepción cerrada y persistencia tras cerrar el proceso. Véase VERIFICACION.md para el orden y las precondiciones de la prueba de reinicio.
