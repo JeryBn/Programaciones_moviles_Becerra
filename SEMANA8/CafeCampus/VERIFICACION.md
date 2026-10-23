@@ -22,3 +22,9 @@ Después se detuvo completamente el proceso con am force-stop y se inició MainA
 Límites: datos y credenciales ficticios, sin pago real ni servidor. Mi recreo es una estimación educativa, no garantía de entrega. El cambio de perfil es un modo de práctica, no seguridad de producción.
 Por petición del usuario el desarrollo fue asistido con ChatGPT. No se afirma una primera fase sin IA, uso de Gemini ni importación del ZIP docente no recibido; véanse ORIGEN-Y-ASISTENCIA.md y PROMPTS.md.
 La compilación y ejecución están verificadas. No se confirmó la selección de CafeCampus en la ventana de Android Studio, que mostraba el proyecto anterior; abrir la carpeta exacta indicada en README.
+
+## Revisión del 23 de octubre de 2026
+
+Compilación y pruebas unitarias: BUILD SUCCESSFUL. Cinco pruebas unitarias de PlanRecreo aprobadas.
+Pruebas instrumentadas de esta rama: OK (6 tests), 41.477 s.
+Se comprobaron búsqueda, repetición, gráfico por hora, permisos de estados y recepción cerrada. La guía completa está en ../GLAB-S08-JLEONS-2026-1.pdf e incluye capturas reales de esta ejecución.
