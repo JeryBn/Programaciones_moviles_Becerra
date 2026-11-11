@@ -14,7 +14,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val container = AppContainer(applicationContext)
+        val container = (application as CatalogoApplication).container
         setContent { CatalogoTheme { AppNav(container) } }
         if (savedInstanceState == null && Build.VERSION.SDK_INT >= 33 &&
             !getPreferences(MODE_PRIVATE).getBoolean("permiso_solicitado", false)) {
