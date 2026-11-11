@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<testsuites tests="1" failures="0" errors="0" skipped="0" time="42.525" timestamp="2026-11-11T06:33:20" hostname="localhost">
+  <testsuite name="com.tecsup.productos.LaboratorioTest" tests="1" failures="0" errors="0" skipped="0" time="41.832" timestamp="2026-11-11T06:33:20" hostname="localhost">
+    <properties>
+      <property name="device" value="medium_phone(AVD) - 16" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="rolesCatalogoDetalleFavoritosYCache" classname="com.tecsup.productos.LaboratorioTest" time="41.832" />
+  </testsuite>
+</testsuites>
