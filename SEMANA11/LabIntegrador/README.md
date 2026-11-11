@@ -6,6 +6,12 @@ Programación en Móviles · Kotlin y Jetpack Compose · modalidad individual so
 
 ## Abrir y configurar
 
+### Demostración local
+
+Usar Android Emulator y la variante `debug` sin `app/google-services.json`. En la raíz iniciar Firebase Emulator Suite con `npx firebase-tools@15.35.0 emulators:start --only auth,firestore --project demo-lab-becerra`. En otra ventana, ejecutar `powershell -File scripts/Preparar-Demo.ps1`. Las cuentas ficticias son `usuario@laboratorio.example` y `admin@laboratorio.example`, ambas con la clave de demostración `CatalogoDemo!12`. Solo existen en los emuladores locales. La API pública del catálogo sigue requiriendo Internet para la primera carga.
+
+### Proyecto Firebase en la nube
+
 1. Abrir esta carpeta como proyecto en Android Studio. Usar el JDK incluido con Android Studio y el SDK 36.
 2. Crear un proyecto de Firebase y registrar la app Android con el paquete `com.tecsup.productos`.
 3. Descargar el archivo de configuración en `app/google-services.json`. Está excluido de Git.
@@ -27,4 +33,8 @@ La interfaz del repositorio permite probar ListaViewModel con datos controlados.
 
 ## Evidencias y estado de entrega
 
-El proyecto se generó con IA desde cero por indicación del estudiante. La fase inicial sin IA, los aportes de una pareja y el historial exigido en la guía requieren revisión con el docente. Consultar PROMPTS.md. Pendientes de verificar con Firebase y el emulador las pruebas PA-01 a PA-14 y las capturas. El código incluye tres pruebas unitarias del catálogo.
+El trabajo se realizó individualmente con asistencia de IA desde la base. El historial registra avances reales de esta revisión. La fase sin IA y los aportes de dos integrantes requieren revisión con el docente. El proyecto incluye tres pruebas unitarias del catálogo y un recorrido de aceptación con Android Emulator y Firebase Emulator Suite. Ejecutar `gradlew.bat testDebugUnitTest connectedDebugAndroidTest` en el emulador dedicado con las cuentas de demostración preparadas.
+
+En Canvas, «Laboratorio 12» enlaza esta guía y muestra la tarea bloqueada desde el 8 de noviembre a las 23:59. La configuración de Firebase en la nube y el usuario del docente para dar acceso quedan sujetos a la asignación del curso.
+
+Pruebas verificadas: 3 unitarias y 1 recorrido instrumentado. [Informe](docs/Informe-Laboratorio-11-12-Becerra.pdf) y [capturas](docs/evidencias/). El recorrido no incluye denegación del permiso de notificaciones.
