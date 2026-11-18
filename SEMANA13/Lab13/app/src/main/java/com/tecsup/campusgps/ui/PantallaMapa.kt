@@ -66,6 +66,11 @@ fun PantallaMapa(vm: MapaViewModel) {
     ) { insets ->
         BoxWithConstraints(Modifier.fillMaxSize().padding(insets).padding(horizontal = 12.dp)) {
             val compacto = maxHeight < 470.dp
+            val alturaLista = when {
+                compacto -> 130.dp
+                maxHeight >= 620.dp -> 304.dp
+                else -> 228.dp
+            }
             val panelMapa: @Composable (Modifier) -> Unit = { modifier ->
                 MapaUbicacion(
                     estado, lugares, seleccionado, cercano, radio, BuildConfig.MAPS_CONFIGURED && vm.mapaDisponible,
@@ -135,7 +140,7 @@ fun PantallaMapa(vm: MapaViewModel) {
                     panelMapa(Modifier.weight(1f).fillMaxWidth())
                     Text("Lugares del campus", Modifier.align(Alignment.Start),
                         style = MaterialTheme.typography.titleMedium)
-                    panelLugares(Modifier.fillMaxWidth().height(if (compacto) 130.dp else 228.dp))
+                    panelLugares(Modifier.fillMaxWidth().height(alturaLista))
                 }
             }
         }

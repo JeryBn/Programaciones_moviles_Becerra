@@ -2,6 +2,7 @@ package com.tecsup.campusgps
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.MaterialTheme
@@ -17,7 +18,7 @@ import com.tecsup.campusgps.viewmodel.MapaViewModel
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+        enableEdgeToEdge(statusBarStyle = SystemBarStyle.dark(android.graphics.Color.TRANSPARENT))
         val factory = CampusViewModelFactory(
             UbicacionRepositoryGoogle(applicationContext), LugaresRepositoryLocal()
         )
