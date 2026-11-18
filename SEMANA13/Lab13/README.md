@@ -62,7 +62,7 @@ Pruebas de ubicación en Android 16 con Google Play Services. En el punto base, 
 | Ubicación del dispositivo desactivada | [06 · GPS apagado](evidencias/06-gps-apagado.png) |
 | Dispositivo sin Google Play Services | [07 · Sin Google Play Services](evidencias/07-sin-play-services.png) |
 
-Las capturas 01–07 corresponden a la versión anterior y documentan permisos, distancias y estados de error. Con MapLibre se comprobó que las teselas de Lima cargan sin clave, que tocar un marcador selecciona su tarjeta, que la cámara puede ir al lugar más cercano y regresar a la ubicación, y que el filtro y la selección se conservan al rotar.
+Las capturas 01–07 corresponden a la versión anterior y documentan permisos, distancias y estados de error. Con MapLibre se comprobó que las teselas de Lima cargan sin clave, que tocar un marcador selecciona su tarjeta, que la cámara puede ir al lugar más cercano y regresar a la ubicación, y que el filtro y la selección se conservan al rotar. En Android 16 AOSP, el mapa y sus cinco marcadores siguieron disponibles al solicitar la ubicación en un dispositivo sin Google Play Services.
 
 | Flujo con MapLibre | Captura |
 | --- | --- |
@@ -70,6 +70,7 @@ Las capturas 01–07 corresponden a la versión anterior y documentan permisos, 
 | Ubicación, distancias, radio y marcador verde | [09 · Ubicación y radio](evidencias/09-ubicacion-y-radio.png) |
 | Cámara en el lugar más cercano | [10 · Navegación](evidencias/10-navegacion-al-mas-cercano.png) |
 | Filtro de comida aplicado al mapa y a la lista | [11 · Filtro en el mapa](evidencias/11-filtro-en-el-mapa.png) |
+| Mapa y catálogo en Android AOSP | [12 · Mapa sin Play Services](evidencias/12-mapa-sin-play-services.png) |
 
 ## Entrega asistida
 
