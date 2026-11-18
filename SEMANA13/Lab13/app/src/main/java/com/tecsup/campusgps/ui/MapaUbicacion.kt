@@ -26,6 +26,7 @@ fun MapaUbicacion(
     cercano: Lugar?,
     radio: Int,
     disponible: Boolean,
+    mostrarUbicacionNativa: Boolean,
     aviso: String,
     modifier: Modifier = Modifier
 ) {
@@ -54,7 +55,13 @@ fun MapaUbicacion(
             camara.animate(CameraUpdateFactory.newLatLngZoom(LatLng(posicion.latitud, posicion.longitud), 16f))
         }
     }
-    GoogleMap(modifier = modifier, cameraPositionState = camara, onMapLoaded = { cargado = true }) {
+    GoogleMap(
+        modifier = modifier,
+        cameraPositionState = camara,
+        properties = MapProperties(isMyLocationEnabled = mostrarUbicacionNativa),
+        uiSettings = MapUiSettings(myLocationButtonEnabled = mostrarUbicacionNativa),
+        onMapLoaded = { cargado = true }
+    ) {
         if (posicion != null) {
             Circle(
                 center = LatLng(posicion.latitud, posicion.longitud),

@@ -21,6 +21,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.tecsup.campusgps.BuildConfig
 import com.tecsup.campusgps.model.UbicacionUi
@@ -43,8 +45,11 @@ fun PantallaMapa(vm: MapaViewModel) {
     fun tienePermiso() = permisos.any {
         ContextCompat.checkSelfPermission(contexto, it) == PackageManager.PERMISSION_GRANTED
     }
+    var ubicacionNativa by remember(contexto) { mutableStateOf(tienePermiso()) }
+    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) { ubicacionNativa = tienePermiso() }
     val solicitar = rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
-        if (tienePermiso()) vm.buscar() else vm.permisoDenegado()
+        ubicacionNativa = tienePermiso()
+        if (ubicacionNativa) vm.buscar() else vm.permisoDenegado()
     }
     fun buscar() {
         if (!vm.mapaDisponible || tienePermiso()) vm.buscar() else solicitar.launch(permisos)
@@ -64,6 +69,7 @@ fun PantallaMapa(vm: MapaViewModel) {
             val panelMapa: @Composable (Modifier) -> Unit = { modifier ->
                 MapaUbicacion(
                     estado, lugares, seleccionado, cercano, radio, BuildConfig.MAPS_CONFIGURED && vm.mapaDisponible,
+                    ubicacionNativa,
                     if (vm.mapaDisponible) "Mapa pendiente de configurar" else "Mapa no disponible en este dispositivo",
                     modifier.clip(RoundedCornerShape(18.dp))
                 )
