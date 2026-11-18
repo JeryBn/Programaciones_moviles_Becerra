@@ -29,6 +29,7 @@ fun PantallaTareas(vm: TareasViewModel) {
     val primos by vm.primos.collectAsStateWithLifecycle()
     val progresoPrimos by vm.progresoPrimos.collectAsStateWithLifecycle()
     val carga by vm.carga.collectAsStateWithLifecycle()
+    val comparaciones by vm.comparaciones.collectAsStateWithLifecycle()
     val simularError by vm.simularError.collectAsStateWithLifecycle()
     var entrada by rememberSaveable { mutableStateOf("1000") }
     val limite = entrada.toIntOrNull()?.takeIf { it >= 2 }
@@ -126,7 +127,26 @@ fun PantallaTareas(vm: TareasViewModel) {
                             }
                         }
                     }
+                    if (comparaciones.isNotEmpty()) ComparacionTiempos(comparaciones)
                 }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ComparacionTiempos(tiempos: Map<String, List<Long>>) {
+    HorizontalDivider()
+    Text("Últimas cargas · ms", style = MaterialTheme.typography.titleSmall)
+    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+        for (modo in listOf("Una por una", "A la vez")) {
+            Column(Modifier.weight(1f)) {
+                Text(modo, color = MaterialTheme.colorScheme.primary)
+                val mediciones = tiempos[modo].orEmpty()
+                for (medicion in mediciones.asReversed()) {
+                    Text(medicion.toString(), fontFamily = FontFamily.Monospace)
+                }
+                if (mediciones.isEmpty()) Text("—")
             }
         }
     }
