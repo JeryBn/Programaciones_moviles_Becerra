@@ -2,7 +2,7 @@
 
 **Jery Becerra Ninaquispe** · Programación en Móviles
 
-CentroTareas es un laboratorio interactivo de corrutinas. Una tarea simulada muestra progreso cancelable, un cálculo cuenta números primos y dos modos de carga permiten comparar el trabajo secuencial y paralelo. El contador **Tócame** permanece accesible al desplazar la pantalla para comprobar que la app sigue respondiendo. La interfaz usa fondo oscuro, tarjetas y controles ámbar.
+CentroTareas es un laboratorio interactivo de corrutinas. Una tarea simulada muestra progreso cancelable, un cálculo cuenta números primos y dos modos de carga permiten comparar el trabajo secuencial y paralelo. El contador **Tócame** permanece accesible al desplazar la pantalla para comprobar que la app sigue respondiendo. La interfaz usa un tema claro con acentos violeta y menta. Un medidor circular destaca el progreso y un gráfico compara las mediciones más recientes de las dos cargas. En pantallas anchas, los paneles de primos y de cargas se colocan lado a lado.
 
 ## Ejecución
 
@@ -59,6 +59,17 @@ Android 16, imagen Google Play. La tarea llegó al 100 % y también se canceló 
 | Resultado de primos | [03 · Primos](evidencias/03-primos.png) |
 | Carga secuencial y paralela | [04 · Comparación](evidencias/04-comparacion.png) |
 | Error simulado | [05 · Error](evidencias/05-error.png) |
+
+### Interfaz actual
+
+En Android 16, la tarea se pudo cancelar y completar con el contador activo. El cálculo devolvió 168 primos hasta 1000. Las cargas tardaron 5003 y 3003 ms, y el reintento recuperó la carga después del error simulado. Al rotar se conservaron el contador y los resultados.
+
+- [06 · Panel de trabajo](evidencias/06-diseno-panel.png)
+- [07 · Medidor de progreso](evidencias/07-diseno-progreso.png)
+- [08 · Resultado de primos](evidencias/08-diseno-primos.png)
+- [09 · Comparación de cargas](evidencias/09-diseno-comparacion.png)
+- [10 · Error y reintento](evidencias/10-diseno-error.png)
+- [11 · Vista horizontal](evidencias/11-diseno-horizontal.png)
 
 ## Entrega asistida
 
