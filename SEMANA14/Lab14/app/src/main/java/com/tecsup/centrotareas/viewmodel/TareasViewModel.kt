@@ -36,13 +36,7 @@ class TareasViewModel(private val repo: TareasRepository) : ViewModel() {
         trabajo = viewModelScope.launch(start = CoroutineStart.UNDISPATCHED) {
             try {
                 Log.d("HILO", "Antes: ${Thread.currentThread().name}")
-                withContext(Dispatchers.Default) {
-                    Log.d("HILO", "Dentro: ${Thread.currentThread().name}")
-                    for (paso in 1..100) {
-                        delay(40)
-                        _progreso.value = paso / 100f
-                    }
-                }
+                repo.progresoTarea().collect { _progreso.value = it }
                 Log.d("HILO", "Después: ${Thread.currentThread().name}")
                 _mensaje.value = "Terminó"
             } catch (e: CancellationException) {
