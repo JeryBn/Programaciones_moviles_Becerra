@@ -27,6 +27,7 @@ fun PantallaTareas(vm: TareasViewModel) {
     val progreso by vm.progreso.collectAsStateWithLifecycle()
     val corriendo by vm.corriendo.collectAsStateWithLifecycle()
     val primos by vm.primos.collectAsStateWithLifecycle()
+    val progresoPrimos by vm.progresoPrimos.collectAsStateWithLifecycle()
     val carga by vm.carga.collectAsStateWithLifecycle()
     val simularError by vm.simularError.collectAsStateWithLifecycle()
     var entrada by rememberSaveable { mutableStateOf("1000") }
@@ -87,7 +88,10 @@ fun PantallaTareas(vm: TareasViewModel) {
                     }
                     when (val resultado = primos) {
                         PrimosUi.Inicial -> Unit
-                        PrimosUi.Calculando -> LinearProgressIndicator(Modifier.fillMaxWidth())
+                        PrimosUi.Calculando -> {
+                            LinearProgressIndicator(progress = { progresoPrimos }, modifier = Modifier.fillMaxWidth())
+                            Text("${(progresoPrimos * 100).toInt()} % de primos")
+                        }
                         PrimosUi.Cancelado -> Text("Cálculo cancelado")
                         is PrimosUi.Listo -> Resultado("${resultado.cantidad} primos", "${resultado.milisegundos} ms")
                     }
