@@ -34,6 +34,8 @@ fun PantallaMapa(vm: MapaViewModel) {
     val estado by vm.estado.collectAsStateWithLifecycle()
     val lugares by vm.lugares.collectAsStateWithLifecycle()
     val categoria by vm.categoria.collectAsStateWithLifecycle()
+    val radio by vm.radio.collectAsStateWithLifecycle()
+    val dentroDelRadio by vm.dentroDelRadio.collectAsStateWithLifecycle()
     val seleccionado by vm.seleccionado.collectAsStateWithLifecycle()
     val cercano by vm.masCercano.collectAsStateWithLifecycle()
     val contexto = LocalContext.current
@@ -61,13 +63,13 @@ fun PantallaMapa(vm: MapaViewModel) {
             val compacto = maxHeight < 470.dp
             val panelMapa: @Composable (Modifier) -> Unit = { modifier ->
                 MapaUbicacion(
-                    estado, lugares, seleccionado, cercano, BuildConfig.MAPS_CONFIGURED && vm.mapaDisponible,
+                    estado, lugares, seleccionado, cercano, radio, BuildConfig.MAPS_CONFIGURED && vm.mapaDisponible,
                     if (vm.mapaDisponible) "Mapa pendiente de configurar" else "Mapa no disponible en este dispositivo",
                     modifier.clip(RoundedCornerShape(18.dp))
                 )
             }
             val panelLugares: @Composable (Modifier) -> Unit = { modifier ->
-                ListaLugares(lugares, seleccionado?.id, cercano?.id, vm::seleccionar, modifier)
+                ListaLugares(lugares, seleccionado?.id, cercano?.id, dentroDelRadio, vm::seleccionar, modifier)
             }
             Column(Modifier.fillMaxSize().padding(vertical = 8.dp),
                 verticalArrangement = Arrangement.spacedBy(6.dp),
@@ -98,6 +100,16 @@ fun PantallaMapa(vm: MapaViewModel) {
                     val posicion = actual.posicion
                     Text(String.format(Locale.ROOT, "%.5f°  /  %.5f°", posicion.latitud, posicion.longitud),
                         style = MaterialTheme.typography.bodySmall)
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        Text("Radio", style = MaterialTheme.typography.labelMedium)
+                        for (distancia in vm.radios) {
+                            FilterChip(selected = radio == distancia, onClick = { vm.cambiarRadio(distancia) },
+                                label = { Text("$distancia m") })
+                        }
+                    }
                     val metros = lugares.firstOrNull { it.lugar.id == cercano?.id }?.metros
                     if (cercano != null && metros != null) {
                         Text("Más cercano: ${cercano?.nombre} (${formatearDistancia(metros)})",

@@ -21,6 +21,7 @@ fun ListaLugares(
     lugares: List<LugarConDistancia>,
     seleccionado: Int?,
     cercano: Int?,
+    dentroDelRadio: Set<Int>,
     onClick: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -45,7 +46,9 @@ fun ListaLugares(
                     ))
                     Column(Modifier.weight(1f)) {
                         Text(lugar.nombre, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
-                        Text(lugar.categoria, style = MaterialTheme.typography.bodySmall, color = colores.onSurfaceVariant)
+                        val categoria = if (lugar.id in dentroDelRadio) "${lugar.categoria} · Dentro del radio"
+                            else lugar.categoria
+                        Text(categoria, style = MaterialTheme.typography.bodySmall, color = colores.onSurfaceVariant)
                     }
                     Text(metros?.let(::formatearDistancia) ?: "Sin calcular", style = MaterialTheme.typography.labelMedium)
                 }

@@ -24,6 +24,7 @@ fun MapaUbicacion(
     lugares: List<LugarConDistancia>,
     seleccionado: Seleccion?,
     cercano: Lugar?,
+    radio: Int,
     disponible: Boolean,
     aviso: String,
     modifier: Modifier = Modifier
@@ -55,6 +56,13 @@ fun MapaUbicacion(
     }
     GoogleMap(modifier = modifier, cameraPositionState = camara, onMapLoaded = { cargado = true }) {
         if (posicion != null) {
+            Circle(
+                center = LatLng(posicion.latitud, posicion.longitud),
+                radius = radio.toDouble(),
+                strokeColor = Color(0xFF3078B7),
+                strokeWidth = 3f,
+                fillColor = Color(0x243078B7)
+            )
             Marker(rememberUpdatedMarkerState(LatLng(posicion.latitud, posicion.longitud)), title = "Estás aquí")
         }
         for ((lugar, _) in lugares) key(lugar.id) {
