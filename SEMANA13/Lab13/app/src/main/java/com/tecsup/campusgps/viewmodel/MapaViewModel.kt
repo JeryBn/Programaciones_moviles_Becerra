@@ -19,7 +19,18 @@ class MapaViewModel(
     private val _estado = MutableStateFlow<UbicacionUi>(UbicacionUi.Inicial)
     val estado = _estado.asStateFlow()
     private val _lugares = MutableStateFlow(catalogo.map { LugarConDistancia(it, null) })
-    val lugares = _lugares.asStateFlow()
+    val categorias = catalogo.map { it.categoria }.distinct()
+    private val _categoria = MutableStateFlow<String?>(null)
+    val categoria = _categoria.asStateFlow()
+    val lugares = combine(_lugares, categoria) { lista, filtro ->
+        lista.filter { filtro == null || it.lugar.categoria == filtro }
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, _lugares.value)
+
+    fun filtrar(categoria: String?) {
+        if (_categoria.value == categoria) return
+        _seleccionado.value = null
+        _categoria.value = categoria
+    }
     private val _seleccionado = MutableStateFlow<Seleccion?>(null)
     val seleccionado = _seleccionado.asStateFlow()
     private var evento = 0

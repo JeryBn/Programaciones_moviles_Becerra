@@ -8,7 +8,9 @@ import android.net.Uri
 import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -31,6 +33,7 @@ import java.util.Locale
 fun PantallaMapa(vm: MapaViewModel) {
     val estado by vm.estado.collectAsStateWithLifecycle()
     val lugares by vm.lugares.collectAsStateWithLifecycle()
+    val categoria by vm.categoria.collectAsStateWithLifecycle()
     val seleccionado by vm.seleccionado.collectAsStateWithLifecycle()
     val cercano by vm.masCercano.collectAsStateWithLifecycle()
     val contexto = LocalContext.current
@@ -77,6 +80,17 @@ fun PantallaMapa(vm: MapaViewModel) {
                     }
                     OutlinedButton(onClick = { vm.seleccionar(cercano?.id) }, enabled = cercano != null && !buscando) {
                         Text("Ir al más cercano")
+                    }
+                }
+                Row(
+                    Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
+                    FilterChip(selected = categoria == null, onClick = { vm.filtrar(null) },
+                        label = { Text("Todos") })
+                    for (filtro in vm.categorias) {
+                        FilterChip(selected = categoria == filtro, onClick = { vm.filtrar(filtro) },
+                            label = { Text(filtro) })
                     }
                 }
                 val actual = estado

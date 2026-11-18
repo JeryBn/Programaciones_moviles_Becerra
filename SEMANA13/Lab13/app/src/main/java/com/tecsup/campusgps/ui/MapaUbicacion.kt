@@ -42,11 +42,7 @@ fun MapaUbicacion(
     }
     val posicion = (estado as? UbicacionUi.Lista)?.posicion
     val destino = lugares.firstOrNull { it.lugar.id == seleccionado?.id }?.lugar
-    val marcadores = remember(lugares.map { it.lugar }.toSet()) {
-        lugares.associate { (lugar, _) ->
-            lugar.id to MarkerState(LatLng(lugar.latitud, lugar.longitud))
-        }
-    }
+    val marcadores = remember { mutableMapOf<Int, MarkerState>() }
     var cargado by remember { mutableStateOf(false) }
     LaunchedEffect(cargado, estado, seleccionado, destino) {
         if (!cargado) return@LaunchedEffect
@@ -65,7 +61,7 @@ fun MapaUbicacion(
             val tono = if (lugar.id == cercano?.id) BitmapDescriptorFactory.HUE_GREEN
                 else BitmapDescriptorFactory.HUE_AZURE
             Marker(
-                state = marcadores.getValue(lugar.id),
+                state = marcadores.getOrPut(lugar.id) { MarkerState(LatLng(lugar.latitud, lugar.longitud)) },
                 title = lugar.nombre,
                 snippet = lugar.categoria,
                 icon = BitmapDescriptorFactory.defaultMarker(tono)
