@@ -50,7 +50,7 @@ La guía plantea bloquear el hilo principal durante cuatro segundos como demostr
 
 ## Evidencia en emulador
 
-Android 16, imagen Google Play. La tarea llegó al 100 % y también se canceló al 46 %, con el contador en 1 durante la ejecución. En Logcat, las líneas de `HILO` mostraron `main → DefaultDispatcher-worker-1 → main`. Se obtuvieron 168 primos hasta 1000. Las cargas iniciales tardaron 5003 ms en secuencia y 3003 ms en paralelo. El reintento devolvió los tres pedidos tras desactivar el error.
+Android 16, imagen Google Play. La tarea llegó al 100 % y también se canceló al 46 %, con el contador en 1 durante la ejecución. En Logcat, las líneas de `HILO` mostraron `main → DefaultDispatcher-worker-1 → main`. Los límites de 100, 1000 y 10000 devolvieron 25, 168 y 1229 primos. También se canceló el cálculo con un límite de 100000000 mientras el contador seguía disponible. La tarea con progreso llegó al 100 % después de rotar y volver a la orientación original. Las cargas iniciales tardaron 5003 ms en secuencia y 3003 ms en paralelo. El reintento devolvió los tres pedidos tras desactivar el error.
 
 | Flujo | Captura |
 | --- | --- |
