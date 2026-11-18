@@ -2,10 +2,16 @@ package com.tecsup.campusgps.ui
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.PointF
 import android.view.Gravity
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -20,7 +26,11 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
@@ -52,11 +62,14 @@ import org.maplibre.geojson.Polygon
 import kotlin.math.asin
 import kotlin.math.atan2
 import kotlin.math.cos
+
+import kotlin.math.roundToInt
 import kotlin.math.sin
 
 private const val ESTILO = "https://tiles.openfreemap.org/styles/liberty"
 private const val PUNTOS = "campus-puntos"
 private const val PUNTOS_CAPA = "campus-puntos-capa"
+
 private const val RADIO = "campus-radio"
 private const val USUARIO = "campus-usuario"
 private const val USUARIO_CAPA = "campus-usuario-capa"
@@ -75,6 +88,7 @@ fun MapaUbicacion(
     val contexto = LocalContext.current
     val ciclo = LocalLifecycleOwner.current.lifecycle
     val seleccionarActual by rememberUpdatedState(seleccionar)
+    val lugaresActuales by rememberUpdatedState(lugares)
     val vista = remember(contexto) {
         MapLibre.getInstance(contexto.applicationContext)
         MapView(contexto)
@@ -83,6 +97,7 @@ fun MapaUbicacion(
     var estilo by remember(vista) { mutableStateOf<Style?>(null) }
     var aviso by remember(vista) { mutableStateOf(false) }
     var mostrarPosicion by remember(vista) { mutableStateOf(false) }
+    var etiquetas by remember(vista) { mutableStateOf<Map<Int, PointF>>(emptyMap()) }
     val posicion = (estado as? UbicacionUi.Lista)?.posicion
     val destino = lugares.firstOrNull { it.lugar.id == seleccionado?.id }?.lugar
 
@@ -126,10 +141,14 @@ fun MapaUbicacion(
         vista.addOnDidFailLoadingMapListener(fallo)
         vista.getMapAsync { instancia ->
             if (!activa) return@getMapAsync
+            instancia.uiSettings.isScrollGesturesEnabled = true
+            instancia.uiSettings.isZoomGesturesEnabled = true
             instancia.uiSettings.isLogoEnabled = false
             instancia.uiSettings.attributionGravity = Gravity.BOTTOM or Gravity.END
             instancia.cameraPosition = CameraPosition.Builder()
                 .target(LatLng(-12.0464, -77.0428)).zoom(14.5).build()
+            instancia.addOnCameraMoveListener { if (activa) etiquetas = instancia.proyectar(lugaresActuales) }
+            instancia.addOnCameraIdleListener { if (activa) etiquetas = instancia.proyectar(lugaresActuales) }
             instancia.addOnMapClickListener { coordenada ->
                 val pixel = instancia.projection.toScreenLocation(coordenada)
                 val id = instancia.queryRenderedFeatures(pixel, PUNTOS_CAPA)
@@ -176,22 +195,33 @@ fun MapaUbicacion(
             Feature.fromGeometry(circulo(it, radio))
         }))
     }
+    LaunchedEffect(estilo, mapa, lugares) {
+        etiquetas = mapa?.proyectar(lugares).orEmpty()
+    }
     LaunchedEffect(estilo, mapa, mostrarUbicacionNativa) {
         val actual = estilo ?: return@LaunchedEffect
         mapa?.let { actualizarUbicacionNativa(contexto, it, actual, mostrarUbicacionNativa) }
     }
     LaunchedEffect(seleccionado, estado) { mostrarPosicion = false }
-    LaunchedEffect(estilo, mapa, seleccionado, posicion) {
-        if (estilo == null) return@LaunchedEffect
-        if (destino != null) {
+    LaunchedEffect(estilo, mapa, posicion) {
+        if (estilo != null && seleccionado == null && posicion != null) mapa?.centrar(posicion)
+    }
+    LaunchedEffect(estilo, mapa, seleccionado, destino) {
+        if (estilo != null && destino != null) {
             mapa?.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(destino.latitud, destino.longitud), 17.0))
-        } else if (posicion != null) {
-            mapa?.centrar(posicion)
         }
     }
 
     Box(modifier) {
-        AndroidView(factory = { vista }, modifier = Modifier.fillMaxSize())
+        AndroidView(factory = { vista }, modifier = Modifier.fillMaxSize().onSizeChanged {
+            etiquetas = mapa?.proyectar(lugaresActuales).orEmpty()
+        })
+        if (estilo != null) {
+            EtiquetasMapa(lugares, etiquetas, seleccionar, Modifier.matchParentSize())
+        }
+        mapa?.let { instancia ->
+            ControlesZoom(instancia, Modifier.align(Alignment.CenterEnd).padding(end = 8.dp))
+        }
         Surface(
             modifier = Modifier.align(Alignment.BottomStart).padding(start = 8.dp, bottom = 8.dp),
             shape = MaterialTheme.shapes.small,
@@ -225,6 +255,32 @@ fun MapaUbicacion(
                     mapa?.centrar(posicion)
                     mostrarPosicion = true
                 }) { Text("Mi ubicación") }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ControlesZoom(mapa: MapLibreMap, modifier: Modifier = Modifier) {
+    Surface(
+        modifier = modifier,
+        shape = MaterialTheme.shapes.medium,
+        color = MaterialTheme.colorScheme.surface,
+        tonalElevation = 4.dp
+    ) {
+        Column {
+            IconButton(
+                onClick = { mapa.animateCamera(CameraUpdateFactory.zoomIn()) },
+                modifier = Modifier.semantics { contentDescription = "Acercar mapa" }
+            ) {
+                Text("+", style = MaterialTheme.typography.titleLarge)
+            }
+            HorizontalDivider(Modifier.size(width = 48.dp, height = 1.dp))
+            IconButton(
+                onClick = { mapa.animateCamera(CameraUpdateFactory.zoomOut()) },
+                modifier = Modifier.semantics { contentDescription = "Alejar mapa" }
+            ) {
+                Text("−", style = MaterialTheme.typography.titleLarge)
             }
         }
     }
@@ -266,6 +322,57 @@ private fun prepararCapas(estilo: Style) {
     estilo.addLayer(CircleLayer(USUARIO_CAPA, USUARIO).withProperties(
         circleColor("#CC302F"), circleRadius(6f), circleStrokeWidth(2f), circleStrokeColor("#FFFFFF")
     ))
+}
+
+private fun MapLibreMap.proyectar(lugares: List<LugarConDistancia>): Map<Int, PointF> {
+    val superficie = projection
+    return lugares.associate { (lugar, _) ->
+        lugar.id to superficie.toScreenLocation(LatLng(lugar.latitud, lugar.longitud))
+    }
+}
+
+@Composable
+private fun EtiquetasMapa(
+    lugares: List<LugarConDistancia>,
+    puntos: Map<Int, PointF>,
+    seleccionar: (Int) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Layout(
+        modifier = modifier,
+        content = {
+            for ((lugar, _) in lugares) {
+                Surface(
+                    modifier = Modifier.clickable { seleccionar(lugar.id) },
+                    color = MaterialTheme.colorScheme.surface,
+                    shape = MaterialTheme.shapes.extraSmall
+                ) {
+                    Text(lugar.nombre, Modifier.padding(horizontal = 5.dp, vertical = 2.dp),
+                        style = MaterialTheme.typography.labelSmall, maxLines = 1)
+                }
+            }
+        }
+    ) { elementos, restricciones ->
+        val ancho = restricciones.maxWidth
+        val alto = restricciones.maxHeight
+        val hijos = elementos.map { it.measure(restricciones.copy(minWidth = 0, minHeight = 0)) }
+        val margen = 12.dp.roundToPx()
+        layout(ancho, alto) {
+            hijos.forEachIndexed { i, etiqueta ->
+                val id = lugares[i].lugar.id
+                val punto = puntos[id] ?: return@forEachIndexed
+                if (punto.x !in 0f..ancho.toFloat() || punto.y !in 0f..alto.toFloat()) return@forEachIndexed
+                val px = punto.x.roundToInt()
+                val py = punto.y.roundToInt()
+                val (x, y) = when (id) {
+                    1, 4 -> px - etiqueta.width - margen to py - etiqueta.height / 2
+                    2 -> px - etiqueta.width / 2 to py + margen
+                    else -> px - etiqueta.width / 2 to py - etiqueta.height - margen
+                }
+                etiqueta.place(x.coerceIn(0, ancho - etiqueta.width), y.coerceIn(0, alto - etiqueta.height))
+            }
+        }
+    }
 }
 
 private fun coleccion(punto: Feature?): FeatureCollection =

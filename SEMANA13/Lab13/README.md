@@ -11,7 +11,7 @@ CampusGPS muestra cinco lugares ficticios de un campus en Lima. Después de obte
 3. Para probar la búsqueda de ubicación usa una imagen con Google Play Services. En **Extended controls → Location**, fija la latitud `-12.0464` y la longitud `-77.0428`. También puedes usar `adb emu geo fix -77.0428 -12.0464` (longitud primero).
 4. Pulsa **Obtener mi ubicación** y concede permiso preciso para reproducir las distancias de ejemplo. Toca un punto del mapa o una tarjeta, prueba **Ir al más cercano**, cambia el filtro y el radio.
 
-Esta versión usa MapLibre Native para renderizar el mapa y OpenFreeMap para servir las teselas. Es una adaptación de la guía, que especificaba Google Maps SDK for Android. Los créditos de cartografía aparecen sobre el mapa.
+Esta versión usa MapLibre Native para renderizar el mapa y OpenFreeMap para servir las teselas. Es una adaptación de la guía, que especificaba Google Maps SDK for Android. Los créditos de cartografía aparecen sobre el mapa. Arrastra el mapa para desplazarte y usa los botones **+** y **−** del borde derecho para cambiar el zoom. En un teléfono también puedes usar el gesto con dos dedos. Los marcadores muestran sus nombres directamente en el mapa. La vista inicial usa el punto de referencia ficticio del laboratorio en Lima. **Obtener mi ubicación** centra la cámara en la posición del dispositivo, que en el emulador depende del punto configurado en Location.
 
 ## Arquitectura
 
@@ -80,6 +80,8 @@ En Android 16 se probó el rediseño en vertical y horizontal, incluidos el camb
 - [14 · Ubicación y radio](evidencias/14-diseno-ubicacion.png)
 - [15 · Filtro y lugar seleccionado](evidencias/15-diseno-filtro.png)
 - [16 · Vista horizontal](evidencias/16-diseno-horizontal.png)
+- [17 · Lugares etiquetados y controles de zoom](evidencias/17-controles-del-mapa.png)
+- [18 · Cámara centrada en otra ubicación del emulador](evidencias/18-centrado-en-ubicacion.png)
 
 ## Entrega asistida
 
