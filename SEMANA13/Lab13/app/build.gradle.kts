@@ -1,15 +1,7 @@
-import java.util.Properties
-
 plugins {
     id("com.android.application") version "9.5.0"
     id("org.jetbrains.kotlin.plugin.compose") version "2.4.0"
 }
-
-val localProps = Properties().apply {
-    val file = rootProject.file("local.properties")
-    if (file.isFile) file.inputStream().use(::load)
-}
-val mapsApiKey = localProps.getProperty("MAPS_API_KEY", "")
 
 android {
     namespace = "com.tecsup.campusgps"
@@ -18,15 +10,12 @@ android {
         applicationId = "com.tecsup.campusgps"
         minSdk = 24
         targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2
+        versionName = "1.1"
 
-        manifestPlaceholders["MAPS_API_KEY"] = mapsApiKey
-        buildConfigField("boolean", "MAPS_CONFIGURED", mapsApiKey.isNotBlank().toString())
     }
     buildFeatures {
         compose = true
-        buildConfig = true
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -43,5 +32,5 @@ dependencies {
 
     implementation("com.google.android.gms:play-services-location:21.3.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.8.1")
-    implementation("com.google.maps.android:maps-compose:8.4.0")
+    implementation("org.maplibre.gl:android-sdk:12.3.1")
 }

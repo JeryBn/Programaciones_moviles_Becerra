@@ -1,22 +1,65 @@
 package com.tecsup.campusgps.ui
 
+import android.annotation.SuppressLint
+import android.content.Context
+import android.view.Gravity
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.LatLng
-import com.google.maps.android.compose.*
-import com.tecsup.campusgps.model.*
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import com.tecsup.campusgps.model.Lugar
+import com.tecsup.campusgps.model.LugarConDistancia
+import com.tecsup.campusgps.model.Posicion
+import com.tecsup.campusgps.model.Seleccion
+import com.tecsup.campusgps.model.UbicacionUi
+import org.maplibre.android.MapLibre
+import org.maplibre.android.camera.CameraPosition
+import org.maplibre.android.camera.CameraUpdateFactory
+import org.maplibre.android.geometry.LatLng
+import org.maplibre.android.location.LocationComponentActivationOptions
+import org.maplibre.android.maps.MapLibreMap
+import org.maplibre.android.maps.MapView
+import org.maplibre.android.maps.Style
+import org.maplibre.android.style.expressions.Expression.get
+import org.maplibre.android.style.layers.CircleLayer
+import org.maplibre.android.style.layers.FillLayer
+import org.maplibre.android.style.layers.LineLayer
+import org.maplibre.android.style.layers.PropertyFactory.*
+import org.maplibre.android.style.sources.GeoJsonSource
+import org.maplibre.geojson.Feature
+import org.maplibre.geojson.FeatureCollection
+import org.maplibre.geojson.Point
+import org.maplibre.geojson.Polygon
+import kotlin.math.asin
+import kotlin.math.atan2
+import kotlin.math.cos
+import kotlin.math.sin
+
+private const val ESTILO = "https://tiles.openfreemap.org/styles/liberty"
+private const val PUNTOS = "campus-puntos"
+private const val PUNTOS_CAPA = "campus-puntos-capa"
+private const val RADIO = "campus-radio"
+private const val USUARIO = "campus-usuario"
+private const val USUARIO_CAPA = "campus-usuario-capa"
 
 @Composable
 fun MapaUbicacion(
@@ -25,62 +68,218 @@ fun MapaUbicacion(
     seleccionado: Seleccion?,
     cercano: Lugar?,
     radio: Int,
-    disponible: Boolean,
     mostrarUbicacionNativa: Boolean,
-    aviso: String,
+    seleccionar: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    if (!disponible) {
-        Surface(modifier, color = MaterialTheme.colorScheme.surfaceVariant) {
-            Box(Modifier.padding(16.dp), contentAlignment = Alignment.Center) {
-                Text(aviso, textAlign = TextAlign.Center)
-            }
-        }
-        return
+    val contexto = LocalContext.current
+    val ciclo = LocalLifecycleOwner.current.lifecycle
+    val seleccionarActual by rememberUpdatedState(seleccionar)
+    val vista = remember(contexto) {
+        MapLibre.getInstance(contexto.applicationContext)
+        MapView(contexto)
     }
-
-    val camara = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(LatLng(-12.0464, -77.0428), 12f)
-    }
+    var mapa by remember(vista) { mutableStateOf<MapLibreMap?>(null) }
+    var estilo by remember(vista) { mutableStateOf<Style?>(null) }
+    var aviso by remember(vista) { mutableStateOf(false) }
+    var mostrarPosicion by remember(vista) { mutableStateOf(false) }
     val posicion = (estado as? UbicacionUi.Lista)?.posicion
     val destino = lugares.firstOrNull { it.lugar.id == seleccionado?.id }?.lugar
-    val marcadores = remember { mutableMapOf<Int, MarkerState>() }
-    var cargado by remember { mutableStateOf(false) }
-    LaunchedEffect(cargado, estado, seleccionado, destino) {
-        if (!cargado) return@LaunchedEffect
+
+    DisposableEffect(vista, ciclo) {
+        var activa = true
+        var iniciada = false
+        var visible = false
+        var reanudada = false
+        val fallo = MapView.OnDidFailLoadingMapListener { if (activa) aviso = true }
+        val observador = LifecycleEventObserver { _, evento ->
+            when (evento) {
+                Lifecycle.Event.ON_CREATE -> {
+                    vista.onCreate(null)
+                    iniciada = true
+                }
+                Lifecycle.Event.ON_START -> {
+                    vista.onStart()
+                    visible = true
+                }
+                Lifecycle.Event.ON_RESUME -> {
+                    vista.onResume()
+                    reanudada = true
+                }
+                Lifecycle.Event.ON_PAUSE -> {
+                    vista.onPause()
+                    reanudada = false
+                }
+                Lifecycle.Event.ON_STOP -> {
+                    vista.onStop()
+                    visible = false
+                }
+                Lifecycle.Event.ON_DESTROY -> {
+                    activa = false
+                    vista.onDestroy()
+                    iniciada = false
+                }
+                else -> Unit
+            }
+        }
+        ciclo.addObserver(observador)
+        vista.addOnDidFailLoadingMapListener(fallo)
+        vista.getMapAsync { instancia ->
+            if (!activa) return@getMapAsync
+            instancia.uiSettings.isLogoEnabled = false
+            instancia.uiSettings.attributionGravity = Gravity.BOTTOM or Gravity.END
+            instancia.cameraPosition = CameraPosition.Builder()
+                .target(LatLng(-12.0464, -77.0428)).zoom(14.5).build()
+            instancia.addOnMapClickListener { coordenada ->
+                val pixel = instancia.projection.toScreenLocation(coordenada)
+                val id = instancia.queryRenderedFeatures(pixel, PUNTOS_CAPA)
+                    .firstOrNull()?.getNumberProperty("id")?.toInt()
+                mostrarPosicion = id == null && instancia.queryRenderedFeatures(pixel, USUARIO_CAPA).isNotEmpty()
+                if (id != null) seleccionarActual(id)
+                id != null || mostrarPosicion
+            }
+            instancia.setStyle(ESTILO) { cargado ->
+                if (activa) {
+                    prepararCapas(cargado)
+                    aviso = false
+                    estilo = cargado
+                }
+            }
+            mapa = instancia
+        }
+        onDispose {
+            activa = false
+            ciclo.removeObserver(observador)
+            vista.removeOnDidFailLoadingMapListener(fallo)
+            if (reanudada) vista.onPause()
+            if (visible) vista.onStop()
+            if (iniciada) vista.onDestroy()
+        }
+    }
+
+    LaunchedEffect(estilo, lugares, cercano, destino, posicion, radio) {
+        val actual = estilo ?: return@LaunchedEffect
+        val puntos = lugares.map { (lugar, _) ->
+            Feature.fromGeometry(Point.fromLngLat(lugar.longitud, lugar.latitud)).apply {
+                addNumberProperty("id", lugar.id)
+                addStringProperty("color", when (lugar.id) {
+                    cercano?.id -> "#16834B"
+                    else -> "#237FD1"
+                })
+                addNumberProperty("borde", if (lugar.id == destino?.id) 4 else 2)
+            }
+        }
+        actual.getSourceAs<GeoJsonSource>(PUNTOS)?.setGeoJson(FeatureCollection.fromFeatures(puntos))
+        val ubicacion = posicion?.let { Feature.fromGeometry(Point.fromLngLat(it.longitud, it.latitud)) }
+        actual.getSourceAs<GeoJsonSource>(USUARIO)?.setGeoJson(coleccion(ubicacion))
+        actual.getSourceAs<GeoJsonSource>(RADIO)?.setGeoJson(coleccion(posicion?.let {
+            Feature.fromGeometry(circulo(it, radio))
+        }))
+    }
+    LaunchedEffect(estilo, mapa, mostrarUbicacionNativa) {
+        val actual = estilo ?: return@LaunchedEffect
+        mapa?.let { actualizarUbicacionNativa(contexto, it, actual, mostrarUbicacionNativa) }
+    }
+    LaunchedEffect(seleccionado, estado) { mostrarPosicion = false }
+    LaunchedEffect(estilo, mapa, seleccionado, posicion) {
+        if (estilo == null) return@LaunchedEffect
         if (destino != null) {
-            camara.animate(CameraUpdateFactory.newLatLngZoom(LatLng(destino.latitud, destino.longitud), 17f))
-            marcadores[destino.id]?.showInfoWindow()
+            mapa?.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(destino.latitud, destino.longitud), 17.0))
         } else if (posicion != null) {
-            camara.animate(CameraUpdateFactory.newLatLngZoom(LatLng(posicion.latitud, posicion.longitud), 16f))
+            mapa?.centrar(posicion)
         }
     }
-    GoogleMap(
-        modifier = modifier,
-        cameraPositionState = camara,
-        properties = MapProperties(isMyLocationEnabled = mostrarUbicacionNativa),
-        uiSettings = MapUiSettings(myLocationButtonEnabled = mostrarUbicacionNativa),
-        onMapLoaded = { cargado = true }
-    ) {
-        if (posicion != null) {
-            Circle(
-                center = LatLng(posicion.latitud, posicion.longitud),
-                radius = radio.toDouble(),
-                strokeColor = Color(0xFF3078B7),
-                strokeWidth = 3f,
-                fillColor = Color(0x243078B7)
-            )
-            Marker(rememberUpdatedMarkerState(LatLng(posicion.latitud, posicion.longitud)), title = "Estás aquí")
+
+    Box(modifier) {
+        AndroidView(factory = { vista }, modifier = Modifier.fillMaxSize())
+        Surface(
+            modifier = Modifier.align(Alignment.BottomStart).padding(start = 8.dp, bottom = 8.dp),
+            shape = MaterialTheme.shapes.small,
+            color = MaterialTheme.colorScheme.surface.copy(alpha = 0.92f)
+        ) {
+            Text("© OpenStreetMap contributors · OpenFreeMap", Modifier.padding(horizontal = 5.dp, vertical = 2.dp),
+                style = MaterialTheme.typography.labelSmall)
         }
-        for ((lugar, _) in lugares) key(lugar.id) {
-            val tono = if (lugar.id == cercano?.id) BitmapDescriptorFactory.HUE_GREEN
-                else BitmapDescriptorFactory.HUE_AZURE
-            Marker(
-                state = marcadores.getOrPut(lugar.id) { MarkerState(LatLng(lugar.latitud, lugar.longitud)) },
-                title = lugar.nombre,
-                snippet = lugar.categoria,
-                icon = BitmapDescriptorFactory.defaultMarker(tono)
-            )
+        if (aviso || destino != null || mostrarPosicion) {
+            Surface(
+                modifier = Modifier.align(Alignment.TopCenter).padding(8.dp),
+                shape = MaterialTheme.shapes.small
+            ) {
+                Text(
+                    when {
+                        aviso -> "No se pudo cargar el mapa. Revisa tu conexión."
+                        mostrarPosicion -> "Estás aquí"
+                        else -> "${destino?.nombre} · ${destino?.categoria}"
+                    },
+                    Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+                    style = MaterialTheme.typography.labelMedium
+                )
+            }
+        }
+        if (mostrarUbicacionNativa && posicion != null && estilo != null) {
+            Surface(
+                modifier = Modifier.align(Alignment.TopStart).padding(start = 8.dp, top = if (destino == null && !mostrarPosicion) 8.dp else 40.dp),
+                shape = MaterialTheme.shapes.small
+            ) {
+                TextButton(onClick = {
+                    mapa?.centrar(posicion)
+                    mostrarPosicion = true
+                }) { Text("Mi ubicación") }
+            }
         }
     }
+}
+
+private fun MapLibreMap.centrar(posicion: Posicion) {
+    animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(posicion.latitud, posicion.longitud), 16.0))
+}
+
+@SuppressLint("MissingPermission") // La pantalla comprueba los permisos antes de activar la capa.
+private fun actualizarUbicacionNativa(contexto: Context, mapa: MapLibreMap, estilo: Style, permitido: Boolean) {
+    val ubicacion = mapa.locationComponent
+    try {
+        if (permitido && !ubicacion.isLocationComponentActivated) {
+            ubicacion.activateLocationComponent(LocationComponentActivationOptions.builder(contexto, estilo).build())
+        }
+        if (ubicacion.isLocationComponentActivated) ubicacion.isLocationComponentEnabled = permitido
+    } catch (_: SecurityException) {
+        // Android puede revocar el permiso mientras se habilita la capa.
+    }
+}
+
+private fun prepararCapas(estilo: Style) {
+    estilo.addSource(GeoJsonSource(RADIO))
+    estilo.addSource(GeoJsonSource(PUNTOS))
+    estilo.addSource(GeoJsonSource(USUARIO))
+    estilo.addLayer(FillLayer("campus-radio-relleno", RADIO).withProperties(
+        fillColor("#3078B7"), fillOpacity(0.20f)
+    ))
+    estilo.addLayer(LineLayer("campus-radio-borde", RADIO).withProperties(
+        lineColor("#3078B7"), lineWidth(2f)
+    ))
+    estilo.addLayer(CircleLayer(PUNTOS_CAPA, PUNTOS).withProperties(
+        circleColor(get("color")),
+        circleRadius(8f),
+        circleStrokeWidth(get("borde")),
+        circleStrokeColor("#FFFFFF")
+    ))
+    estilo.addLayer(CircleLayer(USUARIO_CAPA, USUARIO).withProperties(
+        circleColor("#CC302F"), circleRadius(6f), circleStrokeWidth(2f), circleStrokeColor("#FFFFFF")
+    ))
+}
+
+private fun coleccion(punto: Feature?): FeatureCollection =
+    FeatureCollection.fromFeatures(listOfNotNull(punto))
+
+private fun circulo(centro: Posicion, metros: Int): Polygon {
+    val latitud = Math.toRadians(centro.latitud)
+    val longitud = Math.toRadians(centro.longitud)
+    val arco = metros / 6_371_008.8
+    val borde = (0 until 64).map { paso ->
+        val rumbo = 2.0 * Math.PI * paso / 64
+        val lat = asin(sin(latitud) * cos(arco) + cos(latitud) * sin(arco) * cos(rumbo))
+        val lon = longitud + atan2(sin(rumbo) * sin(arco) * cos(latitud), cos(arco) - sin(latitud) * sin(lat))
+        Point.fromLngLat((Math.toDegrees(lon) + 540) % 360 - 180, Math.toDegrees(lat))
+    }
+    return Polygon.fromLngLats(listOf(borde + borde.first()))
 }

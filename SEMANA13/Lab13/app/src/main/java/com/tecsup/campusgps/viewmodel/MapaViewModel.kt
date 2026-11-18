@@ -14,7 +14,7 @@ class MapaViewModel(
     private val ubicacionRepo: UbicacionRepository,
     lugaresRepo: LugaresRepository
 ) : ViewModel() {
-    val mapaDisponible = ubicacionRepo.playServicesDisponible()
+    val ubicacionDisponible = ubicacionRepo.playServicesDisponible()
     private val catalogo = lugaresRepo.obtenerLugares()
     private val _estado = MutableStateFlow<UbicacionUi>(UbicacionUi.Inicial)
     val estado = _estado.asStateFlow()
