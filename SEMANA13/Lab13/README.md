@@ -57,8 +57,9 @@ Android 16, imagen Google Play. En el punto base, la lista mostró 88, 109, 173,
 | Coordenadas y lista ordenada | [04 · Distancias](evidencias/04-distancias.png) |
 | Filtro de Comida, radio y tarjeta seleccionada | [05 · Filtro y radio](evidencias/05-filtro-y-radio.png) |
 | Ubicación del dispositivo desactivada | [06 · GPS apagado](evidencias/06-gps-apagado.png) |
+| Dispositivo sin Google Play Services | [07 · Sin Google Play Services](evidencias/07-sin-play-services.png) |
 
-La validación se hizo sin clave de Google Maps. Quedan pendientes las pruebas visuales del mapa, la cámara, el círculo, los marcadores y la capa de ubicación nativa. El flujo sin Google Play Services requiere un dispositivo adicional o una imagen de emulador distinta.
+La validación se hizo sin clave de Google Maps. Quedan pendientes las pruebas visuales del mapa, la cámara, el círculo, los marcadores y la capa de ubicación nativa. En un segundo emulador con Android 16 AOSP, sin el paquete `com.google.android.gms`, la app mostró el aviso al solicitar ubicación y mantuvo disponibles los cinco lugares.
 
 ## Entrega asistida
 
