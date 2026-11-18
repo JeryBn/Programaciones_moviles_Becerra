@@ -2,7 +2,7 @@
 
 **Jery Becerra Ninaquispe** · Programación en Móviles
 
-CampusGPS muestra cinco lugares ficticios de un campus en Lima. Después de obtener la ubicación del dispositivo, calcula las distancias, ordena la lista y lleva el mapa al lugar seleccionado o al más cercano. La interfaz usa una barra azul, un mapa enmarcado y tarjetas con distancias y estados de selección.
+CampusGPS muestra cinco lugares ficticios de un campus en Lima. Después de obtener la ubicación del dispositivo, calcula las distancias, ordena la lista y lleva el mapa al lugar seleccionado o al más cercano. La interfaz usa un tema oscuro con acentos lima. El mapa encabeza la vista vertical, con un panel de exploración para ubicación, radio, filtros y tarjetas. En pantallas anchas, el mapa y el panel se muestran lado a lado.
 
 ## Ejecución
 
@@ -71,6 +71,15 @@ Las capturas 01–07 corresponden a la versión anterior y documentan permisos, 
 | Cámara en el lugar más cercano | [10 · Navegación](evidencias/10-navegacion-al-mas-cercano.png) |
 | Filtro de comida aplicado al mapa y a la lista | [11 · Filtro en el mapa](evidencias/11-filtro-en-el-mapa.png) |
 | Mapa y catálogo en Android AOSP | [12 · Mapa sin Play Services](evidencias/12-mapa-sin-play-services.png) |
+
+### Interfaz actual
+
+En Android 16 se probó el rediseño en vertical y horizontal, incluidos el cambio de categoría y de radio, la selección del lugar más cercano y el regreso de la cámara a la ubicación del usuario.
+
+- [13 · Pantalla de exploración](evidencias/13-diseno-exploracion.png)
+- [14 · Ubicación y radio](evidencias/14-diseno-ubicacion.png)
+- [15 · Filtro y lugar seleccionado](evidencias/15-diseno-filtro.png)
+- [16 · Vista horizontal](evidencias/16-diseno-horizontal.png)
 
 ## Entrega asistida
 

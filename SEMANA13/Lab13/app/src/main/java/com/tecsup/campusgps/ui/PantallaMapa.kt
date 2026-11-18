@@ -8,28 +8,36 @@ import android.net.Uri
 import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.tecsup.campusgps.model.Posicion
 import com.tecsup.campusgps.model.UbicacionUi
 import com.tecsup.campusgps.util.formatearDistancia
 import com.tecsup.campusgps.viewmodel.MapaViewModel
 import java.util.Locale
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PantallaMapa(vm: MapaViewModel) {
     val estado by vm.estado.collectAsStateWithLifecycle()
@@ -55,20 +63,22 @@ fun PantallaMapa(vm: MapaViewModel) {
     }
 
     val colores = MaterialTheme.colorScheme
+    val actual = estado
+    val posicion = (actual as? UbicacionUi.Lista)?.posicion
+    val buscando = actual == UbicacionUi.Buscando
+    val destino = cercano
+    val distanciaCercana = lugares.firstOrNull { it.lugar.id == destino?.id }?.metros
     Scaffold(
         containerColor = colores.background,
-        topBar = {
-            TopAppBar(title = { Text("CampusGPS") }, colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = colores.primary, titleContentColor = colores.onPrimary
-            ))
-        }
+        contentWindowInsets = WindowInsets.safeDrawing,
+        topBar = { CabeceraCampus(posicion) }
     ) { insets ->
-        BoxWithConstraints(Modifier.fillMaxSize().padding(insets).padding(horizontal = 12.dp)) {
-            val compacto = maxHeight < 470.dp
+        BoxWithConstraints(Modifier.fillMaxSize().padding(insets).padding(horizontal = 14.dp)) {
+            val lateral = maxWidth >= 560.dp
             val alturaLista = when {
-                compacto -> 130.dp
-                maxHeight >= 620.dp -> 304.dp
-                else -> 228.dp
+                maxHeight >= 680.dp -> 226.dp
+                maxHeight >= 540.dp -> 178.dp
+                else -> 104.dp
             }
             val panelMapa: @Composable (Modifier) -> Unit = { modifier ->
                 MapaUbicacion(
@@ -79,73 +89,164 @@ fun PantallaMapa(vm: MapaViewModel) {
                     radio = radio,
                     mostrarUbicacionNativa = ubicacionNativa,
                     seleccionar = vm::seleccionar,
-                    modifier = modifier.clip(RoundedCornerShape(18.dp))
+                    modifier = modifier.clip(RoundedCornerShape(26.dp))
                 )
             }
-            val panelLugares: @Composable (Modifier) -> Unit = { modifier ->
-                ListaLugares(lugares, seleccionado?.id, cercano?.id, dentroDelRadio, vm::seleccionar, modifier)
-            }
-            Column(Modifier.fillMaxSize().padding(vertical = 8.dp),
-                verticalArrangement = Arrangement.spacedBy(6.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                val buscando = estado == UbicacionUi.Buscando
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-                    Button(onClick = ::buscar, enabled = !buscando) {
-                        Text(if (buscando) "Buscando…" else "Obtener mi ubicación")
-                    }
-                    OutlinedButton(onClick = { vm.seleccionar(cercano?.id) }, enabled = cercano != null && !buscando) {
-                        Text("Ir al más cercano")
-                    }
-                }
-                Row(
-                    Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
-                    horizontalArrangement = Arrangement.spacedBy(6.dp)
-                ) {
-                    FilterChip(selected = categoria == null, onClick = { vm.filtrar(null) },
-                        label = { Text("Todos") })
-                    for (filtro in vm.categorias) {
-                        FilterChip(selected = categoria == filtro, onClick = { vm.filtrar(filtro) },
-                            label = { Text(filtro) })
-                    }
-                }
-                val actual = estado
-                if (actual is UbicacionUi.Lista) {
-                    val posicion = actual.posicion
-                    Text(String.format(Locale.ROOT, "%.5f°  /  %.5f°", posicion.latitud, posicion.longitud),
-                        style = MaterialTheme.typography.bodySmall)
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(6.dp)
-                    ) {
-                        Text("Radio", style = MaterialTheme.typography.labelMedium)
-                        for (distancia in vm.radios) {
-                            FilterChip(selected = radio == distancia, onClick = { vm.cambiarRadio(distancia) },
-                                label = { Text("$distancia m") })
+            val panelLugares: @Composable (Modifier, Boolean) -> Unit = { modifier, usarAltura ->
+                Surface(modifier, shape = RoundedCornerShape(24.dp), color = colores.surface) {
+                    Column(Modifier.padding(horizontal = 14.dp, vertical = 10.dp)) {
+                        if (actual is UbicacionUi.Error) {
+                            MensajeError(actual, {
+                                contexto.startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                                    Uri.fromParts("package", contexto.packageName, null)))
+                            }, ::buscar)
                         }
+
+                        Row(
+                            Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Button(
+                                onClick = ::buscar,
+                                modifier = Modifier.weight(1.25f).heightIn(min = 48.dp),
+                                enabled = !buscando,
+                                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 7.dp)
+                            ) {
+                                if (buscando) {
+                                    CircularProgressIndicator(
+                                        Modifier.size(15.dp),
+                                        color = colores.onSurfaceVariant,
+                                        strokeWidth = 2.dp
+                                    )
+                                    Spacer(Modifier.width(6.dp))
+                                }
+                                Text(if (buscando) "Buscando…" else "Obtener mi ubicación")
+                            }
+                            FilledTonalButton(
+                                onClick = { vm.seleccionar(destino?.id) },
+                                modifier = Modifier.weight(1f).heightIn(min = 48.dp),
+                                enabled = destino != null && !buscando,
+                                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 7.dp)
+                            ) { Text("Ir al más cercano") }
+                        }
+
+                        if (destino != null && distanciaCercana != null && posicion != null) {
+                            Text(
+                                "Más cercano: ${destino.nombre} (${formatearDistancia(distanciaCercana)})",
+                                Modifier.padding(top = 6.dp),
+                                style = MaterialTheme.typography.labelMedium,
+                                color = colores.primary
+                            )
+                        }
+                        if (posicion != null) {
+                            Row(
+                                Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+                                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text("Radio", Modifier.padding(end = 4.dp), color = colores.onSurfaceVariant,
+                                    style = MaterialTheme.typography.labelMedium)
+                                for (distancia in vm.radios) {
+                                    FiltroCampus("$distancia m", radio == distancia) { vm.cambiarRadio(distancia) }
+                                }
+                            }
+                        }
+                        HorizontalDivider(Modifier.padding(top = 4.dp), color = colores.outlineVariant)
+
+                        Row(
+                            Modifier.fillMaxWidth().padding(top = 9.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text("Lugares del campus", Modifier.weight(1f),
+                                style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                            Text("${lugares.size}", Modifier.padding(start = 8.dp),
+                                color = colores.primary, fontFamily = FontFamily.Monospace,
+                                style = MaterialTheme.typography.labelLarge)
+                        }
+                        Row(
+                            Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+                            horizontalArrangement = Arrangement.spacedBy(6.dp)
+                        ) {
+                            FiltroCampus("Todos", categoria == null) { vm.filtrar(null) }
+                            for (filtro in vm.categorias) {
+                                FiltroCampus(filtro, categoria == filtro) { vm.filtrar(filtro) }
+                            }
+                        }
+                        ListaLugares(
+                            lugares, seleccionado?.id, cercano?.id, dentroDelRadio, vm::seleccionar,
+                            if (usarAltura) Modifier.fillMaxWidth().height(alturaLista)
+                            else Modifier.fillMaxWidth().weight(1f)
+                        )
                     }
-                    val metros = lugares.firstOrNull { it.lugar.id == cercano?.id }?.metros
-                    if (cercano != null && metros != null) {
-                        Text("Más cercano: ${cercano?.nombre} (${formatearDistancia(metros)})",
-                            style = MaterialTheme.typography.labelMedium, color = colores.primary)
-                    }
-                }
-                if (actual is UbicacionUi.Error) MensajeError(actual, {
-                    contexto.startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                        Uri.fromParts("package", contexto.packageName, null)))
-                }, ::buscar)
-                if (compacto && LocalConfiguration.current.screenWidthDp >= 550) {
-                    Row(Modifier.weight(1f), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                        panelMapa(Modifier.weight(1f).fillMaxHeight())
-                        panelLugares(Modifier.weight(1f).fillMaxHeight())
-                    }
-                } else {
-                    panelMapa(Modifier.weight(1f).fillMaxWidth())
-                    Text("Lugares del campus", Modifier.align(Alignment.Start),
-                        style = MaterialTheme.typography.titleMedium)
-                    panelLugares(Modifier.fillMaxWidth().height(alturaLista))
                 }
             }
+            if (lateral) {
+                Row(Modifier.fillMaxSize().padding(bottom = 8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    panelMapa(Modifier.weight(1.3f).fillMaxHeight())
+                    panelLugares(Modifier.weight(1f).fillMaxHeight(), false)
+                }
+            } else {
+                Column(Modifier.fillMaxSize().padding(bottom = 7.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    panelMapa(Modifier.weight(1f).fillMaxWidth())
+                    panelLugares(Modifier.fillMaxWidth(), true)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun FiltroCampus(texto: String, activo: Boolean, onClick: () -> Unit) {
+    val colores = MaterialTheme.colorScheme
+    Surface(
+        selected = activo,
+        onClick = onClick,
+        shape = CircleShape,
+        color = if (activo) colores.primary else colores.surface,
+        contentColor = if (activo) colores.onPrimary else colores.onSurfaceVariant,
+        border = if (activo) null else BorderStroke(1.dp, colores.outlineVariant)
+    ) {
+        Box(Modifier.heightIn(min = 32.dp).padding(horizontal = 10.dp, vertical = 5.dp),
+            contentAlignment = Alignment.Center) {
+            Text(texto, style = MaterialTheme.typography.labelLarge, maxLines = 1)
+        }
+    }
+}
+
+@Composable
+private fun CabeceraCampus(posicion: Posicion?) {
+    val colores = MaterialTheme.colorScheme
+    Row(
+        Modifier.fillMaxWidth().statusBarsPadding()
+            .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
+            .padding(horizontal = 16.dp, vertical = 9.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        Canvas(Modifier.size(40.dp).background(colores.primary, CircleShape)) {
+            val punta = Path().apply {
+                moveTo(size.width * .72f, size.height * .24f)
+                lineTo(size.width * .57f, size.height * .72f)
+                lineTo(size.width * .47f, size.height * .54f)
+                lineTo(size.width * .28f, size.height * .45f)
+                close()
+            }
+            drawPath(punta, colores.onPrimary)
+            drawCircle(colores.onPrimary, radius = size.width * .035f,
+                center = Offset(size.width * .31f, size.height * .68f))
+        }
+        Text("CampusGPS", Modifier.weight(1f), style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.Black, maxLines = 1, overflow = TextOverflow.Ellipsis)
+        if (posicion != null) {
+            Text(
+                String.format(Locale.ROOT, "%.5f°\n%.5f°", posicion.latitud, posicion.longitud),
+                color = colores.onSurfaceVariant, style = MaterialTheme.typography.labelMedium,
+                fontFamily = FontFamily.Monospace
+            )
         }
     }
 }
