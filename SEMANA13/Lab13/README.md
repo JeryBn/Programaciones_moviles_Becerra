@@ -7,11 +7,12 @@ CampusGPS muestra cinco lugares ficticios de un campus en Lima. Después de obte
 ## Ejecución
 
 1. Abre `SEMANA13/Lab13` en Android Studio con JDK 17 o posterior y Android SDK 37.
-2. Usa un emulador Android con acceso a Internet para cargar los mapas de OpenFreeMap. MapLibre muestra la cartografía de OpenStreetMap sin clave, cuenta de Google Cloud ni tarjeta.
-3. Para probar la búsqueda de ubicación usa una imagen con Google Play Services. En **Extended controls → Location**, fija la latitud `-12.0464` y la longitud `-77.0428`. También puedes usar `adb emu geo fix -77.0428 -12.0464` (longitud primero).
-4. Pulsa **Obtener mi ubicación** y concede permiso preciso para reproducir las distancias de ejemplo. Toca un punto del mapa o una tarjeta, prueba **Ir al más cercano**, cambia el filtro y el radio.
+2. Habilita **Maps SDK for Android** en un proyecto de Google Cloud con facturación habilitada. Crea una clave restringida al SDK, al paquete `com.tecsup.campusgps` y al SHA-1 de la firma de depuración. Obtén la huella con `gradlew.bat :app:signingReport` en Windows.
+3. Guarda `MAPS_API_KEY=TU_CLAVE` en `local.properties` junto a `sdk.dir` y vuelve a ejecutar la app. El archivo está excluido de Git. Con la clave configurada, CampusGPS usa Google Maps Compose 8.4.0 en dispositivos con Google Play Services. La app usa MapLibre y OpenFreeMap como respaldo cuando falta la clave o Play Services.
+4. En un emulador con Google Play Services, fija la latitud `-12.0464` y la longitud `-77.0428` en **Extended controls → Location**. También puedes usar `adb emu geo fix -77.0428 -12.0464` (longitud primero).
+5. Pulsa **Obtener mi ubicación** y concede permiso preciso. Toca un punto, su nombre o una tarjeta. Usa **+** y **−** para ajustar el zoom y **Mi ubicación** para volver a centrar el mapa.
 
-Esta versión usa MapLibre Native para renderizar el mapa y OpenFreeMap para servir las teselas. Es una adaptación de la guía, que especificaba Google Maps SDK for Android. Los créditos de cartografía aparecen sobre el mapa. Arrastra el mapa para desplazarte y usa los botones **+** y **−** del borde derecho para cambiar el zoom. En un teléfono también puedes usar el gesto con dos dedos. Los marcadores muestran sus nombres directamente en el mapa. La vista inicial usa el punto de referencia ficticio del laboratorio en Lima. **Obtener mi ubicación** centra la cámara en la posición del dispositivo, que en el emulador depende del punto configurado en Location.
+La vista inicial usa el punto de referencia ficticio del laboratorio en Lima. **Obtener mi ubicación** centra la cámara en la posición del dispositivo o en las coordenadas del emulador. Las capturas de este README se tomaron con MapLibre.
 
 ## Arquitectura
 
@@ -34,7 +35,8 @@ flowchart LR
     GPS --> FUSED[FusedLocationProviderClient]
     DATA --> LOCAL[Cinco lugares ficticios]
     VM --> DIST[Location.distanceBetween]
-    UI --> MAP[MapLibre Native]
+    UI --> GOOGLE[Google Maps SDK]
+    UI --> MAP[MapLibre de respaldo]
     MAP --> TILES[OpenFreeMap y OpenStreetMap]
 ```
 
@@ -43,8 +45,8 @@ El filtro afecta a la lista y a los marcadores. **Ir al más cercano** se refier
 ## Para pensar
 
 1. El repositorio encapsula FusedLocationProviderClient y transforma sus resultados al modelo `Posicion`. El ViewModel depende de una interfaz y puede trabajar con otra implementación.
-2. El permiso de Android autoriza el acceso a la ubicación del dispositivo. En el proveedor de la guía, la clave del Maps SDK autoriza las solicitudes al servicio de Google. En esta versión, OpenFreeMap sirve el mapa sin clave. Si falta el permiso de ubicación, el mapa y el catálogo se pueden consultar.
-3. En la variante con Google Maps, guardar la clave en `local.properties` evita publicarla con Git. Si se filtrara, revocaría y reemplazaría la clave, revisaría su uso y coordinaría eliminarla del historial. La variante actual no tiene ese secreto.
+2. El permiso de Android autoriza el acceso a la ubicación del dispositivo. En el proveedor de la guía, la clave del Maps SDK autoriza las solicitudes al servicio de Google. OpenFreeMap sirve el mapa de respaldo cuando falta la clave. Si falta el permiso de ubicación, el mapa y el catálogo se pueden consultar.
+3. En la variante con Google Maps, guardar la clave en `local.properties` evita publicarla con Git. Si se filtrara, revocaría y reemplazaría la clave, revisaría su uso y coordinaría eliminarla del historial. La compilación local toma la clave desde ese archivo cuando está configurada.
 4. El ViewModel llama a `distanciaMetros` cuando llega la posición, ordena el resultado y lo publica. Compose solo muestra el estado y presenta unidades de lectura.
 5. Tras denegaciones repetidas, Android puede dejar de mostrar el diálogo. La app mantiene disponibles los lugares y ofrece **Abrir ajustes** desde el error para que el usuario pueda conceder el permiso manualmente.
 

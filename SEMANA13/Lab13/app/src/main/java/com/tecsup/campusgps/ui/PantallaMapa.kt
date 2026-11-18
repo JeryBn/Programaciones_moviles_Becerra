@@ -32,6 +32,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.tecsup.campusgps.BuildConfig
 import com.tecsup.campusgps.model.Posicion
 import com.tecsup.campusgps.model.UbicacionUi
 import com.tecsup.campusgps.util.formatearDistancia
@@ -81,16 +82,12 @@ fun PantallaMapa(vm: MapaViewModel) {
                 else -> 104.dp
             }
             val panelMapa: @Composable (Modifier) -> Unit = { modifier ->
-                MapaUbicacion(
-                    estado = estado,
-                    lugares = lugares,
-                    seleccionado = seleccionado,
-                    cercano = cercano,
-                    radio = radio,
-                    mostrarUbicacionNativa = ubicacionNativa,
-                    seleccionar = vm::seleccionar,
-                    modifier = modifier.clip(RoundedCornerShape(26.dp))
-                )
+                val marco = modifier.clip(RoundedCornerShape(26.dp))
+                if (BuildConfig.MAPS_CONFIGURED && vm.ubicacionDisponible) {
+                    MapaGoogle(estado, lugares, seleccionado, cercano, radio, ubicacionNativa, vm::seleccionar, marco)
+                } else {
+                    MapaUbicacion(estado, lugares, seleccionado, cercano, radio, ubicacionNativa, vm::seleccionar, marco)
+                }
             }
             val panelLugares: @Composable (Modifier, Boolean) -> Unit = { modifier, usarAltura ->
                 Surface(modifier, shape = RoundedCornerShape(24.dp), color = colores.surface) {

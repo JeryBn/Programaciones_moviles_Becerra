@@ -332,7 +332,7 @@ private fun MapLibreMap.proyectar(lugares: List<LugarConDistancia>): Map<Int, Po
 }
 
 @Composable
-private fun EtiquetasMapa(
+internal fun EtiquetasMapa(
     lugares: List<LugarConDistancia>,
     puntos: Map<Int, PointF>,
     seleccionar: (Int) -> Unit,
