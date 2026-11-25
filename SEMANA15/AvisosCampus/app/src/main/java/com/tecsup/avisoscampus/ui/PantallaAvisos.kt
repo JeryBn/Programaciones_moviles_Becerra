@@ -7,6 +7,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.ui.platform.LocalContext
 import com.tecsup.avisoscampus.model.PermisoUi
 import com.tecsup.avisoscampus.notificacion.Notificador
+import android.content.Intent
+import android.content.IntentFilter
+import androidx.core.content.ContextCompat
+import com.tecsup.avisoscampus.receiver.ModoAvionReceiver
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -33,6 +37,18 @@ fun PantallaAvisos(vm: AvisosViewModel) {
     }
 
     val faltan by vm.faltan.collectAsState()
+
+    val escuchando by vm.escuchandoAvion.collectAsState()
+    DisposableEffect(contexto, escuchando, vm) {
+        val receptor = if (escuchando) ModoAvionReceiver(vm::alCambiarModoAvion) else null
+        if (receptor != null) {
+            ContextCompat.registerReceiver(
+                contexto, receptor, IntentFilter(Intent.ACTION_AIRPLANE_MODE_CHANGED),
+                ContextCompat.RECEIVER_NOT_EXPORTED
+            )
+        }
+        onDispose { if (receptor != null) contexto.unregisterReceiver(receptor) }
+    }
     Scaffold(topBar = {
         TopAppBar(
             title = { Text("AvisosCampus") },
@@ -66,7 +82,12 @@ fun PantallaAvisos(vm: AvisosViewModel) {
                 OutlinedButton(onClick = vm::cancelarRecordatorio, enabled = faltan != null) { Text("Cancelar") }
                 faltan?.let { Text("Faltan $it s") }
             }
-            Tarjeta("Receptor de anuncios") { }
+            Tarjeta("Receptor de anuncios") {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text("Escuchar el modo avión", Modifier.weight(1f))
+                    Switch(checked = escuchando, onCheckedChange = vm::cambiarEscucha)
+                }
+            }
             Tarjeta("Historial") { }
         }
     }

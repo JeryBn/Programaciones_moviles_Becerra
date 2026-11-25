@@ -25,6 +25,8 @@ class AvisosViewModel(private val repo: AvisosRepository) : ViewModel() {
     private var trabajo: Job? = null
     private val _faltan = MutableStateFlow<Int?>(null)
     val faltan = _faltan.asStateFlow()
+    private val _escuchandoAvion = MutableStateFlow(false)
+    val escuchandoAvion = _escuchandoAvion.asStateFlow()
 
     fun permisoRespondido(concedido: Boolean) {
         _permiso.value = if (concedido) PermisoUi.Concedido else PermisoUi.Denegado
@@ -68,5 +70,10 @@ class AvisosViewModel(private val repo: AvisosRepository) : ViewModel() {
         viewModelScope.launch {
             publicar("Modo avión", if (activo) "Activado" else "Desactivado", Origen.MODO_AVION)
         }
+    }
+
+    fun noSePudoMostrar() {
+        _permiso.value = PermisoUi.Denegado
+        _mensaje.value = "Sin permiso: el aviso se guardó en el historial, pero no se mostró"
     }
 }
