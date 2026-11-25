@@ -27,9 +27,10 @@ object Notificador {
     }
 
     fun tienePermiso(context: Context): Boolean =
-        Build.VERSION.SDK_INT < 33 ||
+        NotificationManagerCompat.from(context).areNotificationsEnabled() &&
+            (Build.VERSION.SDK_INT < 33 ||
             ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) ==
-            PackageManager.PERMISSION_GRANTED
+            PackageManager.PERMISSION_GRANTED)
 
     @SuppressLint("MissingPermission")
     fun mostrar(context: Context, aviso: Aviso): Boolean {

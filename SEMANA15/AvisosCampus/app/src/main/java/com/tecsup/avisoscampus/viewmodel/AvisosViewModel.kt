@@ -30,6 +30,7 @@ class AvisosViewModel(private val repo: AvisosRepository) : ViewModel() {
 
     fun permisoRespondido(concedido: Boolean) {
         _permiso.value = if (concedido) PermisoUi.Concedido else PermisoUi.Denegado
+        if (concedido) _mensaje.value = null
     }
 
     fun avisarAhora() {

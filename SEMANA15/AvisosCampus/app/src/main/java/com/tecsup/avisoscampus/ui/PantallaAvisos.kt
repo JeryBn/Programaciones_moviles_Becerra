@@ -11,6 +11,11 @@ import android.content.Intent
 import android.content.IntentFilter
 import androidx.core.content.ContextCompat
 import com.tecsup.avisoscampus.receiver.ModoAvionReceiver
+import android.provider.Settings
+import android.net.Uri
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -31,9 +36,25 @@ fun PantallaAvisos(vm: AvisosViewModel) {
     LaunchedEffect(contexto) {
         if (Notificador.tienePermiso(contexto)) vm.permisoRespondido(true)
     }
+    val mensaje by vm.mensaje.collectAsState()
+    val ciclo = LocalLifecycleOwner.current.lifecycle
+    DisposableEffect(ciclo, contexto, vm) {
+        val observador = LifecycleEventObserver { _, evento ->
+            if (evento == Lifecycle.Event.ON_RESUME) {
+                val disponible = Notificador.tienePermiso(contexto)
+                if (disponible || vm.permiso.value == PermisoUi.Concedido) {
+                    vm.permisoRespondido(disponible)
+                }
+            }
+        }
+        ciclo.addObserver(observador)
+        onDispose { ciclo.removeObserver(observador) }
+    }
 
     LaunchedEffect(contexto, vm) {
-        vm.eventos.collect { aviso -> Notificador.mostrar(contexto, aviso) }
+        vm.eventos.collect { aviso ->
+            if (!Notificador.mostrar(contexto, aviso)) vm.noSePudoMostrar()
+        }
     }
 
     val faltan by vm.faltan.collectAsState()
@@ -75,6 +96,23 @@ fun PantallaAvisos(vm: AvisosViewModel) {
                     if (Notificador.tienePermiso(contexto)) vm.permisoRespondido(true)
                     else if (Build.VERSION.SDK_INT >= 33) lanzador.launch(Manifest.permission.POST_NOTIFICATIONS)
                 }) { Text("Permitir notificaciones") }
+                if (permiso == PermisoUi.Denegado) {
+                    OutlinedButton(onClick = {
+                        val ajustes = if (Build.VERSION.SDK_INT >= 26) {
+                            Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+                                .putExtra(Settings.EXTRA_APP_PACKAGE, contexto.packageName)
+                        } else {
+                            Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:${contexto.packageName}"))
+                        }
+                        contexto.startActivity(ajustes)
+                    }) { Text("Abrir ajustes") }
+                }
+                mensaje?.let {
+                    Surface(
+                        color = MaterialTheme.colorScheme.errorContainer,
+                        contentColor = MaterialTheme.colorScheme.onErrorContainer
+                    ) { Text(it, Modifier.padding(12.dp)) }
+                }
             }
             Tarjeta("Avisos") {
                 Button(onClick = vm::avisarAhora) { Text("Mostrar aviso") }
