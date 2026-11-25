@@ -1,6 +1,12 @@
 package com.tecsup.avisoscampus.ui
 
-
+import android.Manifest
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.ui.platform.LocalContext
+import com.tecsup.avisoscampus.model.PermisoUi
+import com.tecsup.avisoscampus.notificacion.Notificador
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -15,7 +21,12 @@ import com.tecsup.avisoscampus.viewmodel.AvisosViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PantallaAvisos(vm: AvisosViewModel) {
-
+    val contexto = LocalContext.current
+    val permiso by vm.permiso.collectAsState()
+    val lanzador = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission(), vm::permisoRespondido)
+    LaunchedEffect(contexto) {
+        if (Notificador.tienePermiso(contexto)) vm.permisoRespondido(true)
+    }
     Scaffold(topBar = {
         TopAppBar(
             title = { Text("AvisosCampus") },
@@ -29,7 +40,18 @@ fun PantallaAvisos(vm: AvisosViewModel) {
             Modifier.padding(margenes).verticalScroll(rememberScrollState()).padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Tarjeta("Permiso de notificaciones") { }
+            Tarjeta("Permiso de notificaciones") {
+                val (etiqueta, color) = when (permiso) {
+                    PermisoUi.SinPedir -> "Sin pedir" to Color(0xFF555D65)
+                    PermisoUi.Concedido -> "Permitido" to Color(0xFF21633D)
+                    PermisoUi.Denegado -> "Denegado" to MaterialTheme.colorScheme.error
+                }
+                Text(etiqueta, color = color)
+                Button(onClick = {
+                    if (Notificador.tienePermiso(contexto)) vm.permisoRespondido(true)
+                    else if (Build.VERSION.SDK_INT >= 33) lanzador.launch(Manifest.permission.POST_NOTIFICATIONS)
+                }) { Text("Permitir notificaciones") }
+            }
             Tarjeta("Avisos") { }
             Tarjeta("Recordatorio") { }
             Tarjeta("Receptor de anuncios") { }

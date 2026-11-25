@@ -4,7 +4,9 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
-
+import android.Manifest
+import android.content.pm.PackageManager
+import androidx.core.content.ContextCompat
 
 object Notificador {
     const val CANAL = "avisos"
@@ -15,4 +17,9 @@ object Notificador {
             context.getSystemService(NotificationManager::class.java).createNotificationChannel(canal)
         }
     }
+
+    fun tienePermiso(context: Context): Boolean =
+        Build.VERSION.SDK_INT < 33 ||
+            ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) ==
+            PackageManager.PERMISSION_GRANTED
 }
