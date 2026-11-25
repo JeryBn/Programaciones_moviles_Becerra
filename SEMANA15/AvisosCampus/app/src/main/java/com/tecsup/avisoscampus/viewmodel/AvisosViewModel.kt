@@ -51,7 +51,7 @@ class AvisosViewModel(private val repo: AvisosRepository) : ViewModel() {
                     _faltan.value = restantes
                     delay(1_000)
                 }
-                publicar("Recordatorio", "Revisa tu laboratorio pendiente", Origen.RECORDATORIO)
+                publicar("Recordatorio", "Revisa tu laboratorio pendiente. Antes de entregar, comprueba los cambios de esta semana y que las evidencias correspondan a la versión publicada.", Origen.RECORDATORIO)
             } finally {
                 _faltan.value = null
             }
