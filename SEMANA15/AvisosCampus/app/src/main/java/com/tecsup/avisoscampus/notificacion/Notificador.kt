@@ -12,6 +12,9 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.tecsup.avisoscampus.R
 import com.tecsup.avisoscampus.model.Aviso
+import android.app.PendingIntent
+import android.content.Intent
+import com.tecsup.avisoscampus.MainActivity
 
 object Notificador {
     const val CANAL = "avisos"
@@ -34,11 +37,15 @@ object Notificador {
         val gestor = NotificationManagerCompat.from(context)
         if (!gestor.areNotificationsEnabled()) return false
 
+        val intent = Intent(context, MainActivity::class.java)
+            .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+        val pendiente = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
         val notificacion = NotificationCompat.Builder(context, CANAL)
             .setSmallIcon(R.drawable.ic_notificacion)
             .setContentTitle(aviso.titulo)
             .setContentText(aviso.texto)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setContentIntent(pendiente)
             .setAutoCancel(true)
             .build()
         return try {
