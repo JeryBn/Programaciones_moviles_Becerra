@@ -27,6 +27,10 @@ fun PantallaAvisos(vm: AvisosViewModel) {
     LaunchedEffect(contexto) {
         if (Notificador.tienePermiso(contexto)) vm.permisoRespondido(true)
     }
+
+    LaunchedEffect(contexto, vm) {
+        vm.eventos.collect { aviso -> Notificador.mostrar(contexto, aviso) }
+    }
     Scaffold(topBar = {
         TopAppBar(
             title = { Text("AvisosCampus") },
@@ -52,7 +56,9 @@ fun PantallaAvisos(vm: AvisosViewModel) {
                     else if (Build.VERSION.SDK_INT >= 33) lanzador.launch(Manifest.permission.POST_NOTIFICATIONS)
                 }) { Text("Permitir notificaciones") }
             }
-            Tarjeta("Avisos") { }
+            Tarjeta("Avisos") {
+                Button(onClick = vm::avisarAhora) { Text("Mostrar aviso") }
+            }
             Tarjeta("Recordatorio") { }
             Tarjeta("Receptor de anuncios") { }
             Tarjeta("Historial") { }

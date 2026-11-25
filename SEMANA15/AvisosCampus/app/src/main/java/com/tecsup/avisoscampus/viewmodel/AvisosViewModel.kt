@@ -26,4 +26,14 @@ class AvisosViewModel(private val repo: AvisosRepository) : ViewModel() {
     fun permisoRespondido(concedido: Boolean) {
         _permiso.value = if (concedido) PermisoUi.Concedido else PermisoUi.Denegado
     }
+
+    fun avisarAhora() {
+        viewModelScope.launch {
+            publicar("Tarea lista", "Tu entrega fue registrada", Origen.BOTON)
+        }
+    }
+
+    private suspend fun publicar(titulo: String, texto: String, origen: Origen) {
+        _eventos.emit(repo.registrar(titulo, texto, origen))
+    }
 }
