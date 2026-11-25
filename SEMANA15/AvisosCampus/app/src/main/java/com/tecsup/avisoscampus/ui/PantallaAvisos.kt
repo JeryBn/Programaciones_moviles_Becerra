@@ -49,6 +49,8 @@ fun PantallaAvisos(vm: AvisosViewModel) {
         }
         onDispose { if (receptor != null) contexto.unregisterReceiver(receptor) }
     }
+
+    val historial by vm.avisos.collectAsState()
     Scaffold(topBar = {
         TopAppBar(
             title = { Text("AvisosCampus") },
@@ -88,7 +90,7 @@ fun PantallaAvisos(vm: AvisosViewModel) {
                     Switch(checked = escuchando, onCheckedChange = vm::cambiarEscucha)
                 }
             }
-            Tarjeta("Historial") { }
+            HistorialAvisos(historial)
         }
     }
 }
