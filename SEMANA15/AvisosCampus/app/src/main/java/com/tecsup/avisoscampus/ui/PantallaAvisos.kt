@@ -10,6 +10,7 @@ import com.tecsup.avisoscampus.notificacion.Notificador
 import android.content.Intent
 import android.content.IntentFilter
 import androidx.core.content.ContextCompat
+import com.tecsup.avisoscampus.receiver.CargadorReceiver
 import com.tecsup.avisoscampus.receiver.ModoAvionReceiver
 import android.provider.Settings
 import android.net.Uri
@@ -71,6 +72,19 @@ fun PantallaAvisos(vm: AvisosViewModel) {
         onDispose { if (receptor != null) contexto.unregisterReceiver(receptor) }
     }
 
+    val escuchaCargador by vm.escuchandoCargador.collectAsState()
+    DisposableEffect(contexto, escuchaCargador, vm) {
+        val receptor = if (escuchaCargador) CargadorReceiver(vm::alCambiarCargador) else null
+        if (receptor != null) {
+            val filtro = IntentFilter().apply {
+                addAction(Intent.ACTION_POWER_CONNECTED)
+                addAction(Intent.ACTION_POWER_DISCONNECTED)
+            }
+            ContextCompat.registerReceiver(contexto, receptor, filtro, ContextCompat.RECEIVER_NOT_EXPORTED)
+        }
+        onDispose { if (receptor != null) contexto.unregisterReceiver(receptor) }
+    }
+
     val historial by vm.avisos.collectAsState()
     Scaffold(topBar = {
         TopAppBar(
@@ -126,6 +140,10 @@ fun PantallaAvisos(vm: AvisosViewModel) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text("Escuchar el modo avión", Modifier.weight(1f))
                     Switch(checked = escuchando, onCheckedChange = vm::cambiarEscucha)
+                }
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text("Escuchar el cargador", Modifier.weight(1f))
+                    Switch(checked = escuchaCargador, onCheckedChange = vm::cambiarEscuchaCargador)
                 }
             }
             HistorialAvisos(historial)
